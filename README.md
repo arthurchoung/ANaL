@@ -6,6 +6,7 @@ Amiga, NeXTSTEP, and Linux -- Together at last!
   * NeXTStep style widgets (i.e. buttons)
   * Custom lightweight Objective-C foundation
   * Bitmapped graphics, low DPI displays
+  * Running on Linux and X11
 
 
 ## Overview
