@@ -55,7 +55,7 @@ Aqua was extremely slow when it was first released on Mac OS X, while the NeXTSt
 
 ## Why Workbench 2.0 Window Frames
 
-Workbench 2.0 has window frames with a border on all sides, that can be repurposed for resizing. NeXTStep doesn't have borders on the sides, so they can't be repurposed for resizing.
+Workbench 2.0 has window frames with a border on all sides, that can be repurposed for resizing. NeXTStep windows don't have side borders.
 
 Workbench 2.0 has the close button at the upper left corner. NeXTStep has the close button at the upper right corner.
 
@@ -65,7 +65,7 @@ Workbench 2.0 has the close button at the upper left corner. NeXTStep has the cl
 NeXTStep widgets look more polished than Workbench 2.0 widgets.
 
 
-## Why Objective-C
+## Objective-C
 
 Objective-C is the language used by NeXTStep. C and Objective-C are both extremely stable and do not change from year to year. Mixing C, Objective-C, C++, and Objective-C++ is easy.
 
