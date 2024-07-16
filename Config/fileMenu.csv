@@ -1,0 +1,3 @@
+hotKey,displayName,stringFormat,messageForClick
+,,"#{hoverObject|text}",
+,"Move To Trash",,"NSArray|addObject:'anal-moveToTrash.pl'|addObject:(hoverObject|text)|runCommandAndReturnOutput"

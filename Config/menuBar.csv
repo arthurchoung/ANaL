@@ -1,0 +1,17 @@
+disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
+,,4,4,"RedPotionMenuItem","configDir:'Config/rootWindowMenu.csv'|parseCSVFile|asMenu"
+,1,0,0,"TextMenuItem:''",
+,,4,4,"TextMenuItem:'xset'","['anal-commandOutputMenu.pl' 'xset' 'q']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
+,,4,4,"TextMenuItem:'ps'","['anal-commandOutputMenu.pl' 'ps' 'auxk' '-pcpu']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
+,,4,4,"TextMenuItem:'lsblk'","['anal-commandOutputMenu.pl' 'lsblk' '-i' '-o' 'NAME,FSTYPE,FSVER,LABEL,FSAVAIL,FSUSE%,MOUNTPOINTS']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
+,,4,4,"TextMenuItem:'Window'","configDir:'Config/windowMenu.csv'|parseCSVFile|asMenu"
+1,,4,4,"TextMenuItem:'Camera'","['anal-generateVideoCamerasMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
+,,4,4,"TextMenuItem:'Audio'","['anal-generateAudioMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
+,,4,4,"CommandTextMenuItem:['anal-monitorMonitors'] lineMessage:[setupMonitors] stringFormat:'Mon #{currentMonitorIndexName}'","NSArray|addObject:'anal-generateMenuForMonitor:path:.pl'|addObject:(currentMonitorName)|addObject:(configDir:'Temp/listMonitors.txt')|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
+,,4,4,"TextMenuItem:'Clipboard'","['anal-generateClipboardMenu.pl']|runCommandAndReturnOutput|asString|parseCSVFromString|asMenu"
+,,4,4,"CommandTextMenuItem:['anal-printALSAStatus' 'hw:0'] stringFormat:'Volume: #{ifTrue:[playbackSwitch] then:[PercentString:(volume|times:100|intValue)] else:[MuteString]}'","VolumeMenu:'hw:0' :'Master'"
+,,4,4,"CommandTextMenuItem:['anal-printBatteryStatus.pl' ]",
+,,4,4,"CommandBitmapMenuItem:['anal-printCPUStats.pl' ]",
+,,4,4,"CommandTextMenuItem:['anal-printNetworkInfo.pl' ]","['anal-commandOutputMenu.pl' 'ifconfig' '-a']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
+,,4,4,"TextMenuItem:'iwconfig'","['anal-commandOutputMenu.pl' 'iwconfig 2>&1']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
+,,4,4,"CommandTextMenuItem:['anal-printDateEverySecondForTimezone:text:.pl' 'Pacific/Auckland' 'AKL']","configDir:'Config/dateTimeMenu.csv'|parseCSVFile|asMenu"

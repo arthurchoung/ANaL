@@ -1,0 +1,16 @@
+hotKey,stringFormat,messageForClick
+,"#{currentWindow|name|split|nth:0}",
+"Meta-Left","Move To Previous Monitor","windowManager|focusDict|x11MoveToMonitorDelta:-1"
+"Meta-Right","Move To Next Monitor","windowManager|focusDict|x11MoveToMonitorDelta:1"
+"Meta-Up","Raise Window","windowManager|raiseObjectWindow:(windowManager|focusDict)"
+"Meta-Down","Lower Window","windowManager|lowerObjectWindow:(windowManager|focusDict)"
+"Meta-T","Top Half","windowManager|focusDict|x11MaximizeTopHalf"
+"Meta-B","Bottom Half","windowManager|focusDict|x11MaximizeBottomHalf"
+"Meta-L","Left Half","windowManager|focusDict|x11MaximizeLeftHalf"
+"Meta-R","Right Half","windowManager|focusDict|x11MaximizeRightHalf"
+"Meta-Insert","Top Left","windowManager|focusDict|x11MaximizeTopLeft"
+"Meta-Home","Top Right","windowManager|focusDict|x11MaximizeTopRight"
+"Meta-Delete","Bottom Left","windowManager|focusDict|x11MaximizeBottomLeft"
+"Meta-End","Bottom Right","windowManager|focusDict|x11MaximizeBottomRight"
+"Meta-H","Fill To Height Of Monitor","windowManager|focusDict|x11FillToHeightOfMonitor"
+"Meta-M","Toggle Maximize Window","windowManager|focusDict|x11ToggleMaximizeWindow"

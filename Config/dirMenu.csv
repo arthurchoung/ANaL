@@ -1,0 +1,4 @@
+hotKey,displayName,stringFormat,messageForClick
+,,"#{'.'|asRealPath}",
+,"XTerm here",,"['anal-xterm.sh']|runCommandInBackground"
+,"Shuffle with MPV",,"['mpv' '--hwdec=auto' '--shuffle' '.']|runCommandInBackground"
