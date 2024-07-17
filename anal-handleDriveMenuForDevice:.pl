@@ -30,7 +30,7 @@ foreach $line (@lines) {
             chomp $result;
             if ($result eq 'view') {
                 chdir $mountpoint;
-                system('anal', 'show', '.');
+                system('anal');
             } elsif ($result eq 'unmount') {
                 system('anal-unmountDrive.pl', $mountpoint);
             }
