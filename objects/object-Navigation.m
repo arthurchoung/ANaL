@@ -593,7 +593,7 @@ NSLog(@"context %@", _context);
     } else {
         [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleRightMouseDown:)]) {
-            [Definitions fixupEvent:event forBitmapObject:obj];
+            fixupEvent_forBitmapObject_(event, obj);
             [obj handleRightMouseDown:event];
         }
     }
@@ -610,7 +610,7 @@ NSLog(@"context %@", _context);
     } else {
         [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleMouseDown:)]) {
-            [Definitions fixupEvent:event forBitmapObject:obj];
+            fixupEvent_forBitmapObject_(event, obj);
             [obj handleMouseDown:event];
         }
         _buttonPassthrough = YES;
@@ -637,7 +637,7 @@ NSLog(@"context %@", _context);
         int navigationBarHeight = [Definitions navigationBarHeight];
         [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleMouseUp:)]) {
-            [Definitions fixupEvent:event forBitmapObject:obj];
+            fixupEvent_forBitmapObject_(event, obj);
             [obj handleMouseUp:event];
         }
         _buttonPassthrough = NO;
@@ -667,7 +667,7 @@ NSLog(@"context %@", _context);
     } else {
         [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - cellHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleMouseMoved:)]) {
-            [Definitions fixupEvent:event forBitmapObject:obj];
+            fixupEvent_forBitmapObject_(event, obj);
             [obj handleMouseMoved:event];
         }
     }
@@ -765,7 +765,7 @@ shadowRect.y -= 1;
         Int4 buttonRect = [Definitions rectWithX:headerRect.x y:headerRect.y w:headerRect.w/4.0 h:headerRect.h];
         if ([_buttonDown isEqual:@"backButton"] && [_buttonHover isEqual:@"backButton"]) {
             char *palette = ". #344972\nb #000000\n";
-            [Definitions drawBackButtonInBitmap:bitmap rect:buttonRect palette:palette];
+            drawBackButtonInBitmap_rect_palette_(bitmap, buttonRect, palette);
 Int4 shadowRect = buttonRect;
 shadowRect.y -= 1;
 [bitmap setColorIntR:0x4c g:0x55 b:0x61 a:255];
@@ -774,7 +774,7 @@ shadowRect.y -= 1;
             [bitmap drawBitmapText:backButton centeredInRect:buttonRect];
         } else {
             char *palette = ". #587398\nb #000000\n";
-            [Definitions drawBackButtonInBitmap:bitmap rect:buttonRect palette:palette];
+            drawBackButtonInBitmap_rect_palette_(bitmap, buttonRect, palette);
 Int4 shadowRect = buttonRect;
 shadowRect.y -= 1;
 [bitmap setColorIntR:0x4c g:0x55 b:0x61 a:255];
