@@ -439,7 +439,7 @@ NSLog(@"lines %@", lines);
 NSLog(@"unable to run command %@", cmd);
         exit(1);
     }
-    id obj = [@"AmigaPrgBox" asInstance];
+    id obj = [@"PrgBox" asInstance];
     [obj setValue:process forKey:@"process"];
     [obj setValue:nsfmt(@"%@", [cmd join:@" "]) forKey:@"text"];
     [obj setValue:@"OK" forKey:@"okText"];
