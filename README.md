@@ -55,7 +55,7 @@ Workbench 2.0 uses 4 colors, black, white, gray, and blue. The original NeXTStep
 
 Windows 3.1, the colorized Mac System 7, and Mac Platinum all use more than 4 colors.
 
-Aqua was extremely slow when it was first released on Mac OS X, while the NeXTStep GUI on which it was based was reasonably fast on older hardware.
+Aqua looks pretty but was extremely slow when it was first released on Mac OS X, while the NeXTStep GUI on which it was based was fast on equivalent hardware. Functionally, there was not much difference between the two.
 
 
 ## Why Workbench 2.0 Window Frames
@@ -70,11 +70,16 @@ Workbench 2.0 has the close button at the upper left corner. NeXTStep has the cl
 NeXTStep widgets look more polished than Workbench 2.0 widgets.
 
 
+## Why Linux?
+
+Because it starts with an 'L'.
+
+
 ## Objective-C
 
 Objective-C is the language used by NeXTStep. C and Objective-C are both extremely stable and do not change from year to year. Mixing C, Objective-C, C++, and Objective-C++ is easy.
 
-Swift is actually a replacement for C++, it is not a viable replacement for Objective-C.
+Swift is more of a replacement for C++, it is not a viable replacement for Objective-C.
 
 ANaL uses a custom lightweight Objective-C foundation on top of the GCC Objective-C runtime. The style of Objective-C is completely different from the one Apple uses, everything is basically **id**.
 
@@ -87,7 +92,7 @@ ANaL does not use Automatic Reference Counting. It causes problems with type-che
 
 There were two separate parts to the Amiga, both of which were ahead of their time at the time they were released.
 
-The first part was the custom chipset. It was designed to take advantage of the fact that RAM was faster than the CPU at the time. Once the CPU became faster than RAM, the design reached a dead-end and became obsolete. I am not so interested in the custom chipset. For games, I generally prefer tiles and sprites, with the exception of Robotron which uses a blitter. And I prefer sound chips over PCM audio for music and sound effects. Samples are good for speech. So in terms of hardware, I am more interested in the X68000 than the Amiga.
+The first part was the custom chipset. It was designed to take advantage of the fact that RAM was faster than the CPU at the time. Once the CPU became faster than RAM, the design reached a dead-end and became obsolete. I am not so interested in the custom chipset, as I generally prefer tiles and sprites for games, with the exception of Robotron which uses a blitter. And I prefer PSG and FM sound chips over PCM audio for music and sound effects. Samples are good for speech. So in terms of hardware, I am more interested in the X68000 than the Amiga.
 
 The second part was the pre-emptive multitasking operating system. This is the part that is perhaps overlooked when talking about the Amiga, since the focus is usually on games, but I find it to be the more interesting part. There are a number of ideas from the Amiga that I plan to explore in this project, such as AmigaGuide, ARexx ports, data types, and so forth.
 
