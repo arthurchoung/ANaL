@@ -54,7 +54,7 @@ loop:
                         exit 1;
                     }
                     chdir $mountpoint;
-                    system('anal', 'show', '.');
+                    system('anal');
                     exit 0;
                 } else {
                     exit 0;
@@ -102,7 +102,7 @@ EOF
     }
 
     chdir $mountpoint;
-    system('anal', 'show', '.');
+    system('anal');
 
     exit 0;
 }
