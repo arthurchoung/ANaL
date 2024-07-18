@@ -40,6 +40,11 @@ $ ./anal
 Some of the Perl scripts use the JSON module.
 
 
+## Screenshot
+
+![ANaL Screenshot](Screenshots/anal-screenshot.png)
+
+
 ## Why Amiga and NeXTStep
 
 It would be nice to have a GUI that consumes a minimal amount of resources, but is not excessively minimal.
