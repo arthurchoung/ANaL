@@ -1,5 +1,5 @@
 disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
-,,4,4,"RedPotionMenuItem","configDir:'Config/rootWindowMenu.csv'|parseCSVFile|asMenu"
+,,4,4,"AmigaCheckmarkMenuItem","configDir:'Config/rootWindowMenu.csv'|parseCSVFile|asMenu"
 ,1,0,0,"TextMenuItem:''",
 ,,4,4,"TextMenuItem:'xset'","['anal-commandOutputMenu.pl' 'xset' 'q']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'ps'","['anal-commandOutputMenu.pl' 'ps' 'auxk' '-pcpu']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
