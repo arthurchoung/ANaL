@@ -25,45 +25,40 @@
 
 #import "ANAL.h"
 
-static char *redPotionPalette =
-". #E09C20\n"
-"X #B03020\n"
-"o #F8FCF8\n"
-"O #ffffff\n"
-"b #000000\n"
+static id amigaCheckmarkPalette =
+@"b #000022\n"
+@". #FF8800\n"
+@"X #0055AA\n"
+@"o #ffffff\n"
 ;
-static char *redPotionPixels =
-"                \n"
-"      bbbb      \n"
-"     b....b     \n"
-"      bXXb      \n"
-"     boooob     \n"
-"     boXXob     \n"
-"     bobbob     \n"
-"     bobbob     \n"
-"    boobboob    \n"
-"   bobbbbbbob   \n"
-"   bobbbbbbob   \n"
-"   boXXXXXXob   \n"
-"   boXXXXX.ob   \n"
-"   boX.XXXXob   \n"
-"   boXXX.XXob   \n"
-"   booXXXXoob   \n"
-"   boooooooob   \n"
-"    boooooob    \n"
-"     bbbbbb     \n"
+static id amigaCheckmarkPixels =
+@"                    \n"
+@"                    \n"
+@"                    \n"
+@"             bbb bbb\n"
+@"             b.b b.b\n"
+@"            b.b b.b \n"
+@"            b.b b.b \n"
+@"           b.b b.b  \n"
+@"           b.b b.b  \n"
+@"bbb bbb   b.b b.b   \n"
+@"bXb bXb   b.b b.b   \n"
+@" bXb bXb b.b b.b    \n"
+@" bXb bXb b.b b.b    \n"
+@"  bXb bXb.b b.b     \n"
+@"  bXb bXb.b b.b     \n"
+@"   bXb b.b.b.b      \n"
+@"   bXb b.b.b.b      \n"
+@"    bbbbbbbbb       \n"
+@"                    \n"
 ;
 @implementation Definitions(fnmjkdfsjkfsdjkeklwfmklsdmfksdkfmdfjkjkfjdksjf)
-+ (id)RedPotionMenuItem
++ (id)AmigaCheckmarkMenuItem
 {
-    id pixels = nsfmt(@"%s", redPotionPixels);
-    id palette = nsfmt(@"%s", redPotionPalette);
-    id highlightedPalette = palette;
-
     id obj = [@"BitmapMenuItem" asInstance];
-    [obj setValue:pixels forKey:@"pixels"];
-    [obj setValue:palette forKey:@"palette"];
-    [obj setValue:highlightedPalette forKey:@"highlightedPalette"];
+    [obj setValue:amigaCheckmarkPixels forKey:@"pixels"];
+    [obj setValue:amigaCheckmarkPalette forKey:@"palette"];
+    [obj setValue:amigaCheckmarkPalette forKey:@"highlightedPalette"];
     return obj;
 }
 @end
