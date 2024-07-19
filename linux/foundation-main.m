@@ -106,6 +106,13 @@ NSLog(@"Unable to setenv SUDO_ASKPASS");
             if ([result class] == [Definitions class]) {
                 exit(0);
             }
+            if ([result respondsToSelector:@selector(drawInBitmap:rect:)]
+                || [result respondsToSelector:@selector(drawInBitmap:rect:context:)])
+            {
+                [Definitions runWindowManagerForObject:result];
+                [[Definitions navigationStack] setValue:nil forKey:@"context"];
+                exit(0);
+            }
             if ([result isArray]) {
 //                NSOut(@"array with %d elements\n", [result count]);
                 for (int i=0; i<[result count]; i++) {
