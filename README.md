@@ -22,17 +22,23 @@ HOTDOG was created more as a joke, to make fun of the red-yellow color scheme. H
 
 ## How to compile and run
 
+```
 $ sh makeUtils.sh
 
 $ perl build.pl
+```
 
 To run the window manager:
 
+```
 $ ./anal runWindowManager
+```
 
 To run the iPod style interface:
 
+```
 $ ./anal
+```
 
 
 ## Notes
