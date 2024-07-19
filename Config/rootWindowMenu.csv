@@ -4,8 +4,8 @@ hotKey,displayName,messageForClick
 ,,
 "F2",Home,"NSArray|addObject:'anal'|addObject:'open'|addObject:(homeDir)|runCommandInBackground"
 ,,
-,Stopwatch,"['anal' 'show' 'Stopwatch']|runCommandInBackground"
-,WorldClock,"['anal' 'show' 'WorldClock']|runCommandInBackground"
+,Stopwatch,"['anal' 'Stopwatch']|runCommandInBackground"
+,WorldClock,"['anal' 'WorldClock']|runCommandInBackground"
 ,,
 "F9","Toggle Expose Mode","toggleExposeMode"
 ,,
@@ -19,5 +19,5 @@ hotKey,displayName,messageForClick
 ,"Restart","[ 'anal-performRestart.pl' ]|runCommandInBackground"
 ,"Shutdown","[ 'anal-performShutdown.pl' ]|runCommandInBackground"
 ,,
-,"About This Computer","['anal' 'show' 'AboutThisComputer']|runCommandInBackground"
+,"About This Computer","['anal' 'AboutThisComputer']|runCommandInBackground"
 ,"Help","['anal' 'AmigaGuide']|runCommandInBackground"
