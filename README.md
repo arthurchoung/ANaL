@@ -103,7 +103,9 @@ AmigaGuide is a simple hypertext file format.
 
 To view an AmigaGuide file:
 
+```
 $ ./anal AmigaGuide: yourfile.guide
+```
 
 Here are a few screenshots:
 
