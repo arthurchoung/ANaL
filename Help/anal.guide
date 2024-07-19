@@ -1,0 +1,76 @@
+@database anal.guide
+
+@node MAIN
+
+Amiga, NeXTStep, and Linux (ANaL)
+
+Written by Arthur Choung
+
+@{" Help With Slackware Packages " link HELP_WITH_SLACKWARE_PACKAGES }
+@{" Tip About X11 Tearing " link TIP_ABOUT_X11_TEARING}
+
+@endnode
+
+
+@node HELP_WITH_SLACKWARE_PACKAGES
+
+ANaL is a customized version of Slackware.
+
+Slackware packages are installed using 'slackpkg' (run as root)
+
+First, update the package list.
+
+# slackpkg update
+
+To search for a package:
+
+# slackpkg search 'text'
+
+To install a package:
+
+# slackpkg install 'name'
+
+Additional packages can be installed by running 'sbopkg' as root.
+
+# sbopkg
+
+@endnode
+
+@node TIP_ABOUT_X11_TEARING
+
+Run:
+
+# xrandr --listproviders
+
+If you are using the 'modesetting' driver, then you should switch to either the 'intel', 'radeon', or 'amdgpu' driver depending on your GPU, and enable 'TearFree'.
+
+--- /etc/X11/xorg.conf.d/20-intel.conf
+
+Section "Device"
+  Identifier "Intel Graphics"
+  Driver "intel"
+  Option "TearFree" "true"
+EndSection
+
+--- /etc/X11/xorg.conf.d/20-amdgpu.conf
+
+Section "Device"
+  Identifier "AMDGPU"
+  Driver "amdgpu"
+  Option "TearFree" "true"
+EndSection
+
+--- /etc/X11/xorg.conf.d/20-radeon.conf
+
+Section "Device"
+  Identifier "Radeon"
+  Driver "radeon"
+  Option "TearFree" "on"
+EndSection
+
+---
+
+If you have an NVidia GPU, I can't remember what to do, sorry.
+
+@endnode
+

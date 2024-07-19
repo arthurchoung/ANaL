@@ -20,3 +20,4 @@ hotKey,displayName,messageForClick
 ,"Shutdown","[ 'anal-performShutdown.pl' ]|runCommandInBackground"
 ,,
 ,"About This Computer","['anal' 'show' 'AboutThisComputer']|runCommandInBackground"
+,"Help","['anal' 'AmigaGuide']|runCommandInBackground"
