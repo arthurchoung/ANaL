@@ -97,6 +97,23 @@ The first part was the custom chipset. It was designed to take advantage of the 
 The second part was the pre-emptive multitasking operating system. This is the part that is perhaps overlooked when talking about the Amiga, since the focus is usually on games, but I find it to be the more interesting part. There are a number of ideas from the Amiga that I plan to explore in this project, such as AmigaGuide, ARexx ports, data types, and so forth.
 
 
+## AmigaGuide
+
+AmigaGuide is a simple hypertext file format.
+
+To view an AmigaGuide file:
+
+# anal AmigaGuide: yourfile.guide
+
+Here are a few screenshots:
+
+![AmigaGuide Screenshot ANaL](Screenshots/amigaguide-screenshot-anal.png)
+
+![AmigaGuide Screenshot AmigaGuide](Screenshots/amigaguide-screenshot-amigaguide.png)
+
+![AmigaGuide Screenshot NewIcons](Screenshots/amigaguide-screenshot-newicons.png)
+
+
 ## Legal
 
 Copyright (c) 2024 Arthur Choung. All rights reserved.
