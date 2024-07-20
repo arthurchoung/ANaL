@@ -423,7 +423,7 @@ NSLog(@"sendSignal:%d pid %d", signal, _pid);
     } else if (result == 0) {
         close(_outfd);
         _outfd = -1;
-        [self setValue:@"Success" forKey:@"status"];
+        [self setValue:@"Done" forKey:@"status"];
     } else {
         close(_outfd);
         _outfd = -1;
