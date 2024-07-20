@@ -73,7 +73,7 @@ Workbench 2.0 has the close button at the upper left corner. NeXTStep has the cl
 
 ## Why NeXTStep Widgets
 
-NeXTStep widgets look more polished than Workbench 2.0 widgets.
+NeXTStep widgets are more comprehensive than Workbench 2.0 widgets.
 
 
 ## Why Linux?
