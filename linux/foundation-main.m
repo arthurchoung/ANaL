@@ -447,8 +447,8 @@ NSLog(@"unable to run command %@", cmd);
         exit(1);
     }
     id obj = [@"PrgBox" asInstance];
+    [obj setValue:cmd forKey:@"command"];
     [obj setValue:process forKey:@"process"];
-    [obj setValue:nsfmt(@"%@", [cmd join:@" "]) forKey:@"text"];
     [obj setValue:@"OK" forKey:@"okText"];
     [Definitions runWindowManagerForObject:obj];
     exit(0);
