@@ -443,15 +443,6 @@
     }
 }
 
-- (id)urlDecode
-{
-    return [self stringByRemovingPercentEncoding];
-}
-
-- (id)urlEncode
-{
-    return [self stringByAddingPercentEscapes];
-}
 
 
 
