@@ -369,8 +369,11 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
     {
         id status = [_process valueForKey:@"status"];
         if (!status) {
-            if (_process) {
-                status = @"Running";
+            int pid = [_process intValueForKey:@"pid"];
+            if (pid) {
+                status = nsfmt(@"Running (PID %d)", pid);
+            } else {
+                status = @"Not Running";
             }
         }
         id text = nsfmt(@"Status: %@\nCommand: %@", status, [_command join:@" "]);
@@ -466,11 +469,16 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
 {
     if (_buttonDown == _buttonHover) {
         if (_buttonDown == 'o') {
-            if (_dialogMode) {
-                exit(0);
+            id status = [_process valueForKey:@"status"];
+            if (!status) {
+                [_process sendSignal:SIGTERM];
+            } else {
+                if (_dialogMode) {
+                    exit(0);
+                }
+                id x11dict = [event valueForKey:@"x11dict"];
+                [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             }
-            id x11dict = [event valueForKey:@"x11dict"];
-            [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         }
     }
     _buttonDown = 0;
