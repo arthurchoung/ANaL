@@ -307,6 +307,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
 {
     id process = [cmd runCommandAndReturnProcessWithError];
     id obj = [@"PrgBox" asInstance];
+    [obj setValue:cmd forKey:@"command"];
     [obj setValue:process forKey:@"process"];
     [obj setValue:@"TITLE" forKey:@"text"];
     [obj setValue:@"OK" forKey:@"okText"];
@@ -316,6 +317,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
 
 @interface PrgBox : IvarObject
 {
+    id _command;
     id _process;
     char _separator;
     id _text;
@@ -363,6 +365,20 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
     [bitmap setColor:@"black"];
 
     int y = r.y+16;
+
+    {
+        id status = [_process valueForKey:@"status"];
+        if (!status) {
+            if (_process) {
+                status = @"Running";
+            }
+        }
+        id text = nsfmt(@"Status: %@\nCommand: %@", status, [_command join:@" "]);
+        text = [bitmap fitBitmapString:text width:r.w-16*2];
+        [bitmap drawBitmapText:text x:r.x+16 y:y];
+        int textHeight = [bitmap bitmapHeightForText:text];
+        y += textHeight + 16;
+    }
 
     if (_text) {
         id text = [bitmap fitBitmapString:_text width:r.w-16*2];
@@ -415,11 +431,11 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
         if (_returnKeyDown || ((_buttonDown == 'o') && (_buttonHover == 'o'))) {
             drawDefaultButtonDownInBitmap_rect_(bitmap, _okRect);
             [bitmap setColor:@"black"];
-            [bitmap drawBitmapText:_okText centeredInRect:innerRect];
+            [bitmap drawBitmapText:okText centeredInRect:innerRect];
         } else {
             drawDefaultButtonInBitmap_rect_(bitmap, _okRect);
             [bitmap setColor:@"black"];
-            [bitmap drawBitmapText:_okText centeredInRect:innerRect];
+            [bitmap drawBitmapText:okText centeredInRect:innerRect];
         }
     }
 
