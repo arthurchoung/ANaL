@@ -27,6 +27,16 @@
 
 #define MAX_RECT 640
 
+static int qsort_displayName(void *aptr, void *bptr, void *arg)
+{
+    id a = *((id *)aptr);
+    id b = *((id *)bptr);
+
+    id aDisplayName = [a valueForKey:@"displayName"];
+    id bDisplayName = [b valueForKey:@"displayName"];
+    return [aDisplayName compare:bDisplayName];
+}
+
 static int qsort_fileType(void *aptr, void *bptr, void *arg)
 {
     id a = *((id *)aptr);
@@ -42,9 +52,34 @@ static int qsort_fileType(void *aptr, void *bptr, void *arg)
     if (!aIsDirectory && bIsDirectory) {
         return 1;
     }
-    id aDisplayName = [a valueForKey:@"displayName"];
-    id bDisplayName = [b valueForKey:@"displayName"];
-    return [aDisplayName compare:bDisplayName];
+    return 0;
+}
+static int qsort_reverseDate(void *aptr, void *bptr, void *arg)
+{
+    id a = *((id *)aptr);
+    id b = *((id *)bptr);
+
+    id aFileModificationDate = [a valueForKey:@"fileModificationDate"];
+    id bFileModificationDate = [b valueForKey:@"fileModificationDate"];
+    return [bFileModificationDate compare:aFileModificationDate];
+}
+
+static int qsort_fileType_displayName(void *aptr, void *bptr, void *arg)
+{
+    int val = qsort_fileType(aptr, bptr, arg);
+    if (val) {
+        return val;
+    }
+    return qsort_displayName(aptr, bptr, arg);
+}
+
+static int qsort_fileType_reverseDate(void *aptr, void *bptr, void *arg)
+{
+    int val = qsort_fileType(aptr, bptr, arg);
+    if (val) {
+        return val;
+    }
+    return qsort_reverseDate(aptr, bptr, arg);
 }
 
 static void drawStripedBackgroundInBitmap_rect_(id bitmap, Int4 r)
@@ -156,9 +191,31 @@ static unsigned char *button_bottom_right_squared =
     int _cursorY;
 
     id _navigationRightMouseDownMessage;
+    id _sort;
+    id _filter;
 }
 @end
 @implementation Dir
+- (void)inputFilter
+{
+    id cmd = nsarr();
+    [cmd addObject:@"anal"];
+    [cmd addObject:@"input"];
+    [cmd addObject:@"OK"];
+    [cmd addObject:@"Cancel"];
+    [cmd addObject:@"Enter filter:"];
+    id output = [cmd runCommandAndReturnOutput];
+    id str = [output asString];
+    if ([str hasSuffix:@"\n"]) {
+        str = [str chomp];
+        if ([str length]) {
+            [self setValue:str forKey:@"filter"];
+        } else {
+            [self setValue:nil forKey:@"filter"];
+        }
+        [self updateArrayAndTimestamp];
+    }
+}
 - (id)hoverObject
 {
     if (_buttonHover) {
@@ -181,7 +238,26 @@ static unsigned char *button_bottom_right_squared =
 {
     id arr = [_currentDirectory contentsOfDirectory];
     arr = [arr asFileArray];
-    arr = [arr asArraySortedWithFunction:qsort_fileType argument:0];
+
+    if ([_filter length]) {
+        id filter = [_filter lowercaseString];
+        id results = nsarr();
+        for (int i=0; i<[arr count]; i++) {
+            id elt = [arr nth:i];
+            id displayName = [elt valueForKey:@"displayName"];
+            displayName = [displayName lowercaseString];
+            if ([displayName containsString:filter]) {
+                [results addObject:elt];
+            }
+        }
+        arr = results;
+    }
+
+    if ([_sort isEqual:@"reverseDate"]) {
+        arr = [arr asArraySortedWithFunction:qsort_fileType_reverseDate argument:0];
+    } else {
+        arr = [arr asArraySortedWithFunction:qsort_fileType_displayName argument:0];
+    }
     return arr;
 }
 - (void)updateArray
