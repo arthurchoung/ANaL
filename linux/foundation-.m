@@ -2141,24 +2141,6 @@ NSLog(@"OUT OF MEMORY! NSDictionary -setValue:forKey:");
 }
 
 @end
-@implementation NSValue
-+ (id)valueWithPointer:(void *)ptr
-{
-    return [[[self alloc] initWithPointer:ptr] autorelease];
-}
-- (id)initWithPointer:(void *)ptr
-{
-    self = [super init];
-    if (self) {
-        _contents = ptr;
-    }
-    return self;
-}
-- (void *)pointerValue
-{
-    return _contents;
-}
-@end
 
 #ifdef BUILD_WITH_GNU_PRINTF
 #include <printf.h>

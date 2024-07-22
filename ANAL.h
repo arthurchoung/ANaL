@@ -111,8 +111,6 @@ typedef struct {
 @end
 @interface NSMutableData : NSData
 @end
-@interface NSValue : NSObject
-@end
 
 @interface IvarObject : NSObject
 @end
