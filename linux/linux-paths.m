@@ -25,8 +25,27 @@
 
 #import "ANAL.h"
 
-@implementation Definitions(jfkldsjklfjdsklfjlksdklfj)
+@implementation Definitions(fjkdsljfklsdjf)
++ (id)configDir
+{
+    id execDir = [Definitions execDir];
+    if ([execDir isEqual:@"/usr/bin"]) {
+        id homeConfigDir = [Definitions homeDir:@"ANaL"];
+        if ([homeConfigDir isDirectory]) {
+            return homeConfigDir;
+        }
+        return @"/etc/ANaL";
+    }
+    return execDir;
+}
 
++ (id)configDir:(id)path
+{
+    return nsfmt(@"%@/%@", [Definitions configDir], path);
+}
+@end
+
+@implementation Definitions(jfkldsjklfjdsklfjlksdklfj)
 + (id)execDir:(id)str
 {
     return nsfmt(@"%@/%@", [Definitions execDir], str);
@@ -45,7 +64,27 @@
     }
     return execDir;
 }
-
-
 @end
 
+@implementation Definitions(fjkdsljfklsdjfueirwieofj)
+#ifdef BUILD_FOR_ANDROID
++ (id)homeDir
+{
+    return @"/sdcard";
+}
+#else
++ (id)homeDir
+{
+    char *home = getenv("HOME");
+    if (!home) {
+        return [self execDir];
+    }
+    return nsfmt(@"%s", home);
+}
+#endif
+
++ (id)homeDir:(id)path
+{
+    return nsfmt(@"%@/%@", [Definitions homeDir], path);
+}
+@end
