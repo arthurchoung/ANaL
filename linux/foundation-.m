@@ -48,11 +48,6 @@ static FILE *ANAL_stderr = NULL;
 #define LOG(...) ((void)fprintf(ANAL_stderr, __VA_ARGS__))
 
 
-static Class __NSConstantStringClass = nil;
-static Class __NSStringClass = nil;
-static Class __NSMutableStringClass = nil;
-static Class __NSObjectClass = nil;
-
 static IMP my_objc_msg_forward2(id receiver, SEL sel)
 {
 LOG("objc_msg_forward2 receiver %p class '%s' selector '%s'\n", receiver, object_getClassName(receiver), sel_getName(sel));
@@ -393,16 +388,6 @@ NSLog(@"OUT OF MEMORY! NSAutoreleasePool -addObject: newAlloc %d", newAlloc);
     if (!cstr) {
         return NO;
     }
-/*
-    if (_length != ((NSObject *)obj)->_length) {
-        return NO;
-    }
-    Class cls = object_getClass(obj);
-    if ((cls != __NSConstantStringClass) && (cls != __NSStringClass) && (cls != __NSMutableStringClass)) {
-        return NO;
-    }
-
-*/
     if (!strcmp(_contents, cstr)) {
         return YES;
     }
@@ -1398,16 +1383,6 @@ NSLog(@"OUT OF MEMORY! NSString +stringWithFormat:");
     if (!cstr) {
         return NO;
     }
-/*
-    if (_length != ((NSObject *)obj)->_length) {
-        return NO;
-    }
-    Class cls = object_getClass(obj);
-    if ((cls != __NSConstantStringClass) && (cls != __NSStringClass) && (cls != __NSMutableStringClass)) {
-        return NO;
-    }
-
-*/
     if (!strcmp(_contents, cstr)) {
         return YES;
     }
@@ -2271,26 +2246,6 @@ void ANAL_initialize(FILE *fp)
 #ifdef BUILD_WITH_GNUSTEP_RUNTIME
     __objc_msg_forward3 = my_objc_msg_forward3;
 #endif
-    __NSConstantStringClass = objc_getClass("NSConstantString");
-    if (!__NSConstantStringClass) {
-LOG("ERROR! missing NSConstantString\n");
-        exit(0);
-    }
-    __NSStringClass = objc_getClass("NSString");
-    if (!__NSStringClass) {
-LOG("ERROR! missing NSString\n");
-        exit(0);
-    }
-    __NSMutableStringClass = objc_getClass("NSMutableString");
-    if (!__NSMutableStringClass) {
-LOG("ERROR! missing NSMutableString\n");
-        exit(0);
-    }
-    __NSObjectClass = objc_getClass("NSObject");
-    if (!__NSObjectClass) {
-LOG("ERROR! missing NSObject\n");
-        exit(0);
-    }
 
 #ifdef BUILD_WITH_GNU_PRINTF
     if (register_printf_function('@', print_objc_object, print_objc_object_arginfo) != 0) {
