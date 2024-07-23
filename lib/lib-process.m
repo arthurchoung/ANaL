@@ -413,7 +413,7 @@ NSLog(@"sendSignal:%d pid %d", signal, _pid);
         return;
     }
     if (!_data) {
-        [self setValue:[[[NSMutableData alloc] init] autorelease] forKey:@"data"];
+        [self setValue:[[[NSData alloc] init] autorelease] forKey:@"data"];
     }
     char buf[4096];
     int result = read(_outfd, buf, sizeof(buf));
@@ -518,7 +518,7 @@ NSLog(@"write result %d", result);
     char readbuf[4096];
     int result = read(fd, readbuf, sizeof(readbuf));
     if (result > 0) {
-        id data = [[[NSMutableData alloc] init] autorelease];
+        id data = [[[NSData alloc] init] autorelease];
         [data appendBytes:readbuf length:result];
         return data;
     } else if (result == 0) {
@@ -530,7 +530,7 @@ NSLog(@"write result %d", result);
 }
 - (id)readAllData:(int)fd
 {
-    id data = [[[NSMutableData alloc] init] autorelease];
+    id data = [[[NSData alloc] init] autorelease];
     char readbuf[4096];
     for(;;) {
         int result = read(fd, readbuf, sizeof(readbuf));

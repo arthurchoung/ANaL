@@ -173,7 +173,7 @@
         [_current removeAllObjects];
     }
     if ([_cells count]) {
-        [_rows addObject:[[_cells mutableCopy] autorelease]];
+        [_rows addObject:[[_cells copy] autorelease]];
         [_cells removeAllObjects];
     }
 }

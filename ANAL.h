@@ -97,19 +97,11 @@ typedef struct {
 @end
 @interface NSString : NSObject
 @end
-@interface NSMutableString : NSString
-@end
 @interface NSDictionary : NSObject
-@end
-@interface NSMutableDictionary : NSDictionary
 @end
 @interface NSArray : NSObject
 @end
-@interface NSMutableArray : NSArray
-@end
 @interface NSData : NSObject
-@end
-@interface NSMutableData : NSData
 @end
 
 @interface IvarObject : NSObject

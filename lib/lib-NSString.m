@@ -133,7 +133,7 @@
 }
 - (id)replaceNonAlphanumericCharactersWithSpaces
 {
-    id str = [[self mutableCopy] autorelease];
+    id str = [[self copy] autorelease];
     return [str destructiveReplaceCharactersNotInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890" withChar:' '];
 }
 

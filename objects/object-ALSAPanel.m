@@ -998,7 +998,7 @@ NSLog(@"waiting for input");
         return;
     }
     if (!_standardInputData) {
-        [self setValue:[NSMutableData data] forKey:@"standardInputData"];
+        [self setValue:[NSData data] forKey:@"standardInputData"];
     }
     char buf[4096];
     int n = read(0, buf, 4096);

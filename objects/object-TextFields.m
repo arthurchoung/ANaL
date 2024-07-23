@@ -511,7 +511,7 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
                 str = @"";
             }
             if (_hidden) {
-                str = [[[str mutableCopy] autorelease] destructiveReplaceCharactersNotInString:@"" withChar:'*'];
+                str = [[[str copy] autorelease] destructiveReplaceCharactersNotInString:@"" withChar:'*'];
             }
 
             if (_currentField == i) {

@@ -953,7 +953,7 @@ static int qsort_reverseNumericSort(void *aptr, void *bptr, void *arg)
 
 - (id)asShuffledArray
 {
-    id src = [[self mutableCopy] autorelease];
+    id src = [[self copy] autorelease];
     id dst = nsarr();
     for (;;) {
         int count = [src count];
@@ -966,6 +966,47 @@ static int qsort_reverseNumericSort(void *aptr, void *bptr, void *arg)
         [src removeObjectAtIndex:index];
     }
     return dst;
+}
+
+@end
+
+@implementation NSArray(fjkdslfjklsdjfklsdjk)
+
+- (void)push:(id)object
+{
+    [self addObject:object];
+}
+
+- (void)removeLastObject
+{
+    int count = [self count];
+    if (count < 1) {
+        return;
+    }
+    [self removeObjectAtIndex:count-1];
+}
+
+- (id)pop
+{
+    if ([self count] > 0) {
+        id object = [[self lastObject] retain];
+        [self removeLastObject];
+        [object autorelease];
+        return object;
+    }
+    else {
+        return nil;
+    }
+}
+
+- (id)shift
+{
+    if ([self count] == 0) {
+        return nil;
+    }
+    id obj = [[self objectAtIndex:0] retain];
+    [self removeObjectAtIndex:0];
+    return [obj autorelease];
 }
 
 @end

@@ -29,9 +29,9 @@
 
 + (id)globalContext
 {
-    static NSMutableDictionary *dict = nil;
+    static NSDictionary *dict = nil;
     if (!dict) {
-        dict = [[NSMutableDictionary alloc] init];
+        dict = [[NSDictionary alloc] init];
     }
     return dict;
 }

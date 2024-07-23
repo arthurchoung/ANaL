@@ -79,3 +79,17 @@
 }
 
 @end
+
+@implementation NSDictionary(fjdksjfsdfjksdjfksdljfklsdjfklj)
+
+- (void)addObject:(id)obj intoArrayForKey:(id)key
+{
+    id arr = [self valueForKey:key];
+    if (!arr) {
+        arr = nsarr();
+        [self setValue:arr forKey:key];
+    }
+    [arr addObject:obj];
+}
+
+@end

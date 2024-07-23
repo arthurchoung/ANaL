@@ -36,7 +36,7 @@
 @implementation Definitions(jfkdlsjklfjsdklfljksdf)
 + (id)dataFromStandardInput
 {
-    id data = [NSMutableData data];
+    id data = [NSData data];
     for(;;) {
         char buf[4096];
         int n = read(0, buf, 4096);
@@ -110,7 +110,7 @@ exit(0);
 @implementation Definitions(fjdkslfjklsdf)
 + (void)testFilePointer
 {
-    id path = [Definitions configDir:@"Config/menuBar.csv"];
+    id path = [Definitions execDir:@"anal-xterm.sh"];
     id fp = [@"FilePointer" asInstance];
     if ([fp openFile:path mode:@"r"]) {
         for(;;) {

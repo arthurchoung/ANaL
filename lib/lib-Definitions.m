@@ -30,28 +30,28 @@
 
 id nsarr()//$;
 {
-    return [NSMutableArray array];
+    return [NSArray array];
 }
 id nsdict()//$;
 {
-    return [NSMutableDictionary dictionary];
+    return [NSDictionary dictionary];
 }
 id nsfmt(id formatString, ...)///$;
 {
     va_list args;
     va_start(args, formatString);
-    id str = [[[NSMutableString alloc] initWithFormat:formatString arguments:args] autorelease];
+    id str = [[[NSString alloc] initWithFormat:formatString arguments:args] autorelease];
     va_end(args);
     return str;
 }
 
 id nscstr(char *str)//$;
 {
-    return (str) ? [NSMutableString stringWithUTF8String:str] : nil;
+    return (str) ? [NSString stringWithUTF8String:str] : nil;
 }
 id nscstrn(char *str, int len)//$;
 {
-    return (str) ? [[[NSMutableString alloc] initWithBytes:str length:len] autorelease] : nil;
+    return (str) ? [[[NSString alloc] initWithBytes:str length:len] autorelease] : nil;
 }
 
 @implementation Definitions

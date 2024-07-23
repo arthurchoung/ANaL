@@ -42,9 +42,6 @@ static id callMethod(id target, struct objc_method *m, id args)
     if (!strncmp("copy", selectorName, 4)) {
         return nil;
     }
-    if (!strncmp("mutableCopy", selectorName, 11)) {
-        return nil;
-    }
     if (!strcmp("new", selectorName)) {
         return nil;
     }

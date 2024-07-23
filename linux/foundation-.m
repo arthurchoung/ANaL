@@ -625,8 +625,6 @@ static void percent_decode(char *buf)
     }
 }
 
-@implementation NSMutableString
-@end
 @implementation NSString
 - (id)substringFromIndex:(int)index
 {
@@ -744,7 +742,7 @@ NSLog(@"OUT OF MEMORY! NSString -initWithBytes:length:");
 NSLog(@"OUT OF MEMORY! NSString +stringWithFormat:");
         exit(0);
     }
-    return [[[NSMutableString alloc] initWithBytesNoCopy:strp length:result] autorelease];
+    return [[[NSString alloc] initWithBytesNoCopy:strp length:result] autorelease];
 }
 
 - (id)destructivePercentDecode
@@ -1083,10 +1081,6 @@ NSLog(@"OUT OF MEMORY! NSString +stringWithFormat:");
     }
     char *str = [obj UTF8String];
     return strcmp(_contents, str);
-}
-- (id)mutableCopy
-{
-    return [self copy];
 }
 - (id)copy
 {
@@ -1434,8 +1428,6 @@ NSLog(@"OUT OF MEMORY! NSString +stringWithFormat:");
 
 
 
-@implementation NSMutableArray
-@end
 @implementation NSArray
 - (BOOL)isArray
 {
@@ -1511,10 +1503,6 @@ NSLog(@"NSArray valueForKey:%@", key);
     }
     _length = 0;
     memset(elts, 0, sizeof(id)*_alloc);
-}
-- (id)mutableCopy
-{
-    return [self copy];
 }
 - (id)copy
 {
@@ -1651,7 +1639,7 @@ NSLog(@"OUT OF MEMORY!");
         destptr += [str length];
     }
 
-    return [[[NSMutableString alloc] initWithBytesNoCopy:dest length:totalLength] autorelease];
+    return [[[NSString alloc] initWithBytesNoCopy:dest length:totalLength] autorelease];
 }
 - (void)addObject:(id)obj
 {
@@ -1843,10 +1831,6 @@ int qsort_compare_helper(void *a, void *b, void *arg)
     }
     [super dealloc];
 }
-- (id)mutableCopy
-{
-    return [self copy];
-}
 - (id)copy
 {
     id data = [[NSData alloc] init];
@@ -1917,10 +1901,6 @@ NSLog(@"alloc %d", _alloc);
     }
 }
 @end
-@implementation NSMutableData
-@end
-@implementation NSMutableDictionary
-@end
 @implementation NSDictionary
 - (BOOL)isDictionary
 {
@@ -1952,13 +1932,9 @@ NSLog(@"alloc %d", _alloc);
     }
     [super dealloc];
 }
-- (id)mutableCopy
-{
-    return [self copy];
-}
 - (id)copy
 {
-    id dict = [[NSMutableDictionary alloc] init];
+    id dict = [[NSDictionary alloc] init];
     id *elts = _contents;
     for (int i=0; i<_length; i+=2) {
         [dict setValue:elts[i+1] forKey:elts[i]];
@@ -1967,11 +1943,11 @@ NSLog(@"alloc %d", _alloc);
 }
 + (id)dictionary
 {
-    return [[[NSMutableDictionary alloc] init] autorelease];
+    return [[[NSDictionary alloc] init] autorelease];
 }
 + (id)dictionaryWithObjects:(id *)objects forKeys:(id *)keys count:(int)count
 {
-    id dict = [[[NSMutableDictionary alloc] init] autorelease];
+    id dict = [[[NSDictionary alloc] init] autorelease];
     for (int i=0; i<count; i++) {
         [dict setValue:objects[i] forKey:keys[i]];
     }
