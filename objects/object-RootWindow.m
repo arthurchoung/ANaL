@@ -49,7 +49,7 @@
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
     id buttonDownWhich = [event valueForKey:@"buttonDownWhich"];
 
-    id obj = [[[Definitions configDir:@"Config/rootWindowMenu.csv"] parseCSVFile] asMenu];
+    id obj = [[[Definitions configDir:@"Menu/rootWindowMenu.csv"] parseCSVFile] asMenu];
     int w = [obj preferredWidth];
     int h = [obj preferredHeight];
 

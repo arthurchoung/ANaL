@@ -161,7 +161,7 @@ static unsigned char *button_bottom_right_squared =
 + (id)Dir
 {
     id obj = [@"Dir" asInstance];
-    [obj setValue:@"configDir:'Config/dirMenu.csv'|parseCSVFile|asMenu" forKey:@"navigationRightMouseDownMessage"];
+    [obj setValue:@"configDir:'Menu/dirMenu.csv'|parseCSVFile|asMenu" forKey:@"navigationRightMouseDownMessage"];
     [obj setValue:[@"." asRealPath] forKey:@"currentDirectory"];
     [obj updateArrayAndTimestamp];
     id nav = [Definitions navigationStack];
@@ -468,7 +468,7 @@ static unsigned char *button_bottom_right_squared =
         int mouseRootX = [event intValueForKey:@"mouseRootX"];
         int mouseRootY = [event intValueForKey:@"mouseRootY"];
 
-        id obj = [[[Definitions configDir:@"Config/fileMenu.csv"] parseCSVFile] asMenu];
+        id obj = [[[Definitions configDir:@"Menu/fileMenu.csv"] parseCSVFile] asMenu];
         if (obj) {
             [obj setValue:self forKey:@"contextualObject"];
             [windowManager openButtonDownMenuForObject:obj x:mouseRootX y:mouseRootY w:0 h:0];

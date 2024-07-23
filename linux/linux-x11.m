@@ -1961,7 +1961,7 @@ NSLog(@"keysym %d mod1 %d mod2 %d mod3 %d mod4 %d mod5 %d", keysym, e->state&Mod
     if (_isWindowManager) {
         id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
 NSLog(@"hotkey keyString %@", keyString);
-        id hotKeyFiles = [[Definitions configDir:@"Config/hotKeyFiles.csv"] parseCSVFile];
+        id hotKeyFiles = [[Definitions configDir:@"Menu/hotKeyFiles.csv"] parseCSVFile];
         for (int i=0; i<[hotKeyFiles count]; i++) {
             id hotKeyFile = [hotKeyFiles nth:i];
             id path = [hotKeyFile valueForKey:@"path"];

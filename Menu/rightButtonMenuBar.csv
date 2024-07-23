@@ -1,0 +1,2 @@
+flexible,leftPadding,rightPadding,objectMessage,messageForClick
+,4,4,"TextMenuItem:'Example1'","configDir:'Menu/rootWindowMenu.csv'|parseCSVFile|asMenu"

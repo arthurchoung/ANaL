@@ -71,7 +71,7 @@
             scaling = 1;
         }
         [self setPixelScaling:scaling];
-        id configPath = [Definitions configDir:@"Config/menuBar.csv"];
+        id configPath = [Definitions configDir:@"Menu/menuBar.csv"];
         [self setValue:configPath forKey:@"configPath"];
         id rightButtonFile = @"rightButtonMenuBar.csv";
         [self setValue:rightButtonFile forKey:@"rightButtonFile"];
@@ -263,7 +263,7 @@ NSLog(@"handleRightMouseDown");
     }
     _rightButtonDown = YES;
     if (_rightButtonFile) {
-        id path = [Definitions configDir:nsfmt(@"Config/%@", _rightButtonFile)];
+        id path = [Definitions configDir:nsfmt(@"Menu/%@", _rightButtonFile)];
         id arr = [self readMenuBarFromFile:path];
         [self setValue:arr forKey:@"rightButtonArray"];
 

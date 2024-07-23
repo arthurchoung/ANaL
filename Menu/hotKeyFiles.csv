@@ -1,0 +1,3 @@
+path,flashMessage
+Menu/rootWindowMenu.csv,"menuBar|object|flashIndex:0 duration:20"
+Menu/windowMenu.csv,"menuBar|object|flashIndex:5 duration:20"
