@@ -9,6 +9,7 @@ anal-monitorMountChanges
 anal-packRectanglesIntoWidth:height:...
 anal-printALSAStatus
 anal-printALSAUpdates
+anal-printALSAFirstElement
 anal-setALSAMute:
 anal-setALSAValues
 anal-setALSAVolume
