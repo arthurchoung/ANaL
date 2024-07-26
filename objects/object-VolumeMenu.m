@@ -40,7 +40,15 @@ static double normalizedYForRect_insideRect_(Int4 innerRect, Int4 outerRect)
 @implementation Definitions(fjkdlsjfklmnekwlvmlkdsjkvsfjdskfjsdk)
 + (id)VolumeMenu
 {
-    return [Definitions VolumeMenu:@"hw:0" :@"Master"];
+    id name = [Definitions currentAudioDevice];
+    id cmd = nsarr();
+    [cmd addObject:@"anal-printALSAFirstElement"];
+    [cmd addObject:name];
+    id element = [[cmd runCommandAndReturnOutput] asString];
+    if ([element length]) {
+        return [Definitions VolumeMenu:name :element];
+    }
+    return nil;
 }
 + (id)VolumeMenu:(id)cardName :(id)mixerName
 {
