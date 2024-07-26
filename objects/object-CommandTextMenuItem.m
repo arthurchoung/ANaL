@@ -25,18 +25,6 @@
 
 #import "ANAL.h"
 
-// FIXME: Couple of hacks, fix later
-@implementation Definitions(fmekwlfeiosmfklxdvmosjdfiosdf)
-+ (id)PercentString:(id)val
-{
-    return nsfmt(@"%@%%", val);
-}
-+ (id)MuteString
-{
-    return @"Mute";
-}
-@end
-
 // for compatibility
 // CommandOutputText has been renamed to CommandTextMenuItem
 @implementation Definitions(fjkdlsfjjfdksjfklksdejwklfmksldmfklsdmfklsdjkf)
