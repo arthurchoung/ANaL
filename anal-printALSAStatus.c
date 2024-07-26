@@ -1,4 +1,5 @@
 #include <alsa/asoundlib.h>
+#include <ctype.h>
 
 snd_ctl_t *_ctl;
 char *_name = "hw:0";
@@ -161,6 +162,95 @@ void print_status()
     fflush(stdout);
 }
 
+void get_first_element()
+{
+    snd_mixer_t* handle;
+
+    if ((snd_mixer_open(&handle, 0)) < 0) {
+        return;
+    }
+    if ((snd_mixer_attach(handle, _name)) < 0) {
+        goto cleanup;
+    }
+    if ((snd_mixer_selem_register(handle, NULL, NULL)) < 0) {
+        goto cleanup;
+    }
+    int ret = snd_mixer_load(handle);
+    if (ret < 0) {
+        goto cleanup;
+    }
+
+    for (snd_mixer_elem_t *elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) {
+        if (snd_mixer_elem_get_type(elem) != SND_MIXER_ELEM_SIMPLE) {
+            continue;
+        }
+        int index = snd_mixer_selem_get_index(elem);
+        char *elem_name = (char *) snd_mixer_selem_get_name(elem);
+
+        static char namebuf[256];
+        if (elem_name) {
+            char *p = elem_name;
+            char *q = namebuf;
+            char *end = &namebuf[255];
+            for (;;) {
+                if (!*p) {
+                    break;
+                }
+                if (q == end) {
+                    break;
+                }
+                if (isalnum(*p)) {
+                    *q = *p;
+                    q++;
+                }
+                p++;
+            }
+            *q = 0;
+        } else {
+            strcpy(namebuf, "none");
+        }
+    
+        if (snd_mixer_selem_has_playback_volume(elem)) {
+            _mix_name = namebuf;
+            break;
+        }
+
+    }
+
+cleanup:
+    snd_mixer_close(handle);
+}
+
+void read_asoundrc()
+{
+    char *home = getenv("HOME");
+    if (!home) {
+fprintf(stderr, "Unable to get HOME environment variable\n");
+        return;
+    }
+
+    char pathbuf[1024];
+    sprintf(pathbuf, "%.256s/.asoundrc", home);
+    FILE *fp = fopen(pathbuf, "r");
+    if (!fp) {
+fprintf(stderr, "Unable to open file '%s'\n", pathbuf);
+        return;
+    }
+    char buf[1024];
+    if (fgets(buf, 1024, fp)) {
+        if (!strncmp(buf, "#ANaL hw:", 9)) {
+            char *p = &buf[9];
+            if (isdigit(*p)) {
+                unsigned long val = strtoul(p, 0, 10);
+                static char namebuf[64];
+                sprintf(namebuf, "hw:%lu", val);
+                _name = namebuf;
+            }
+        }
+    }
+    fclose(fp);
+}
+
 /*
 
 Usage: anal-printALSAStatus [card name] [mixer name]
@@ -174,9 +264,13 @@ void main(int argc, char **argv)
 {
     if (argc >= 2) {
         _name = argv[1];
+    } else {
+        read_asoundrc();
     }
     if (argc >= 3) {
         _mix_name = argv[2];
+    } else {
+        get_first_element();
     }
 
     if (!setup()) {
