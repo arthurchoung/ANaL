@@ -430,6 +430,24 @@ NSLog(@"sendSignal:%d pid %d", signal, _pid);
         [self setValue:nsfmt(@"Error: %s", strerror(errno)) forKey:@"status"];
     }
 }
+- (BOOL)writeLine:(id)str
+{
+NSLog(@"writeLine infd %d", _infd);
+    if (_infd == -1) {
+        return NO;
+    }
+    int len = [str length];
+NSLog(@"writeLine str '%@' len %d", str, len);
+    int result = write(_infd, [str UTF8String], len);
+NSLog(@"writeLine result %d", result);
+    if (result == len) {
+        result = write(_infd, "\n", 1);
+        if (result == 1) {
+            return YES;
+        }
+    }
+    return NO;
+}
 - (BOOL)writeString:(id)str
 {
 NSLog(@"writeString infd %d", _infd);
