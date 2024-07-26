@@ -658,7 +658,7 @@ if (x+w >= monitorX+monitorWidth) {
                 monitorIndex++;
             }
             [bitmap setColorIntR:0x00 g:0x00 b:0x00 a:0xff];
-            [bitmap drawBitmapText:[text join:@""] x:monitorX+5*2*_pixelScaling y:4*_pixelScaling];
+            [bitmap drawBitmapText:[text join:@""] x:monitorX+5*2*_pixelScaling y:2*_pixelScaling];
         }
     }
 
