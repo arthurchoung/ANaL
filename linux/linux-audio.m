@@ -25,6 +25,33 @@
 
 #import "ANAL.h"
 
+// FIXME: Couple of hacks, fix later
+@implementation Definitions(fmekwlfeiosmfklxdvmosjdfiosdf)
++ (id)PercentString:(id)val
+{
+    return nsfmt(@"%@%%", val);
+}
++ (id)MuteString
+{
+    return @"Mute";
+}
+@end
+
+
+@implementation Definitions(fmekwlfmklsdmkfl)
++ (id)currentAudioDevice
+{
+    id path = [Definitions homeDir:@".asoundrc"];
+    id str = [path stringFromFile];
+    if ([str hasPrefix:@"#ANaL hw:"]) {
+        int num = [str intValueForKey:@"hw"];
+        return nsfmt(@"hw:%d", num);
+    }
+    return @"hw:0";
+}
+@end
+
+
 @interface AudioOutput : IvarObject
 {
     id _aplay;
