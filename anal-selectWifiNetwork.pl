@@ -11,7 +11,7 @@ if (not $interface) {
 
 system('sudo', '-A', 'ifconfig', $interface, 'up');
 
-$choice = `anal-generateWifiNetworksPanel.pl | anal show SelectWifiPanel`;
+$choice = `anal-generateWifiNetworksPanel.pl | anal show WifiNetworksPanel`;
 chomp $choice;
 if (not $choice) {
 exit 0;
