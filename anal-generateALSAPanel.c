@@ -101,7 +101,7 @@ void print_all()
                 } else {
                     prefix = "Middle";
                 }
-                printf("panel%sButton:'%s' checkmark:(lastLine|if:[%s%d|isEqual:%d] then:[1] else:[0]) message:['nth:%d enum:%d'|writeLineToStandardOutput]\n", prefix, buf, namebuf, index, i, nth, i);
+                printf("panel%sButton:'%s' checkmark:(lastLine|if:[%s%d|isEqual:%d] then:[1] else:[0]) message:[outputProcess|writeLine:'nth:%d enum:%d']\n", prefix, buf, namebuf, index, i, nth, i);
             }
             continue;
         }
@@ -132,12 +132,14 @@ void print_all()
             }
 
             if (hasPlaybackVolume && hasPlaybackSwitch) {
-                printf("panelTopSlider:'%s%dPlaybackVolume' message:[str:'nth:%d playbackVolume:#{buttonDownKnobPct}'|writeLineToStandardOutput]\n", namebuf, index, nth);
-                printf("panelBottomButton:'Mute' toggle:(lastLine|if:[%s%dPlaybackSwitch] then:[0] else:[1]) message:[lastLine|if:[%s%dPlaybackSwitch] then:['nth:%d playbackSwitch:0'|writeLineToStandardOutput] else:['nth:%d playbackSwitch:1'|writeLineToStandardOutput]]\n", namebuf, index, namebuf, index, nth, nth);
+                printf("panelTopSlider:'%s%dPlaybackVolume' message:[outputProcess|writeLine:(str:'nth:%d playbackVolume:#{buttonDownKnobPct}')]\n", namebuf, index, nth);
+                printf("panelMiddleButton:'On' checkmark:(lastLine|if:[%s%dPlaybackSwitch] then:[1] else:[0]) message:[outputProcess|writeLine:'nth:%d playbackSwitch:1']\n", namebuf, index, nth);
+                printf("panelBottomButton:'Mute' checkmark:(lastLine|if:[%s%dPlaybackSwitch] then:[0] else:[1]) message:[outputProcess|writeLine:'nth:%d playbackSwitch:0']\n", namebuf, index, nth);
             } else if (hasPlaybackVolume) {
-                printf("panelSingleSlider:'%s%dPlaybackVolume' message:[str:'nth:%d playbackVolume:#{buttonDownKnobPct}'|writeLineToStandardOutput]\n", namebuf, index, nth);
+                printf("panelSingleSlider:'%s%dPlaybackVolume' message:[outputProcess|writeLine:(str:'nth:%d playbackVolume:#{buttonDownKnobPct}')]\n", namebuf, index, nth);
             } else if (hasPlaybackSwitch) {
-                printf("panelSingleButton:'Mute' toggle:'%s%dPlaybackSwitch' message:[lastLine|if:[%s%dPlaybackSwitch] then:['nth:%d playbackSwitch:0'|writeLineToStandardOutput] else:['nth:%d playbackSwitch:1'|writeLineToStandardOutput]]\n", namebuf, index, namebuf, index, nth, nth);
+                printf("panelTopButton:'On' checkmark:(lastLine|if:[%s%dPlaybackSwitch] then:[1] else:[0]) message:[outputProcess|writeLine:'nth:%d playbackSwitch:1']\n", namebuf, index, nth);
+                printf("panelBottomButton:'Mute' checkmark:(lastLine|if:[%s%dPlaybackSwitch] then:[0] else:[1]) message:[outputProcess|writeLine:'nth:%d playbackSwitch:0']\n", namebuf, index, nth);
             }
         }
 
@@ -149,12 +151,14 @@ void print_all()
                 printf("panelText:'%s Capture:'\n", displaynamebuf);
             }
             if (hasCaptureVolume && hasCaptureSwitch) {
-                printf("panelTopSlider:'%s%dCaptureVolume' message:[str:'nth:%d captureVolume:#{buttonDownKnobPct}'|writeLineToStandardOutput]\n", namebuf, index, nth);
-                printf("panelBottomButton:'Mute' toggle:'%s%dCaptureSwitch' message:[lastLine|if:[%s%dCaptureSwitch] then:['nth:%d captureSwitch:0'|writeLineToStandardOutput] else:['nth:%d captureSwitch:1'|writeLineToStandardOutput]]\n", namebuf, index, namebuf, index, nth, nth);
+                printf("panelTopSlider:'%s%dCaptureVolume' message:[outputProcess|writeLine:(str:'nth:%d captureVolume:#{buttonDownKnobPct}')]\n", namebuf, index, nth);
+                printf("panelMiddleButton:'On' checkmark:(lastLine|if:[%s%dCaptureSwitch] then:[1] else:[0]) message:[outputProcess|writeLine:'nth:%d captureSwitch:1']\n", namebuf, index, nth);
+                printf("panelBottomButton:'Mute' checkmark:(lastLine|if:[%s%dCaptureSwitch] then:[0] else:[1]) message:[outputProcess|writeLine:'nth:%d captureSwitch:0']\n", namebuf, index, nth);
             } else if (hasCaptureVolume) {
-                printf("panelSingleSlider:'%s%dCaptureVolume' message:[str:'nth:%d captureVolume:#{buttonDownKnobPct}'|writeLineToStandardOutput]\n", namebuf, index, nth);
+                printf("panelSingleSlider:'%s%dCaptureVolume' message:[outputProcess|writeLine:(str:'nth:%d captureVolume:#{buttonDownKnobPct}')]\n", namebuf, index, nth);
             } else if (hasCaptureSwitch) {
-                printf("panelSingleButton:'Mute' toggle:'%s%dCaptureSwitch' message:[lastLine|if:[%s%dCaptureSwitch] then:['nth:%d captureSwitch:0'|writeLineToStandardOutput] else:['nth:%d captureSwitch:1'|writeLineToStandardOutput]]\n", namebuf, index, namebuf, index, nth, nth);
+                printf("panelTopButton:'On' checkmark:(lastLine|if:[%s%dCaptureSwitch] then:[1] else:[0]) message:[outputProcess|writeLine:'nth:%d captureSwitch:0']\n", namebuf, index, nth);
+                printf("panelBottomButton:'Mute' toggle:(lastLine|if:[%s%dCaptureSwitch] then:[0] else:[1]) message:[outputProcess|writeLine:'nth:%d captureSwitch:0']\n", namebuf, index, nth);
             }
         }
     }
@@ -201,9 +205,10 @@ void main(int argc, char **argv)
 
     printf("panelStripedBackground\n");
     if (_displayName) {
-        printf("panelText:'%s'\n", _displayName);
+        printf("panelText:'%s' color:'white' backgroundColor:'black'\n", _displayName);
     }
-    printf("panelText:'%s'\n", _name);
+    printf("panelText:'%s' color:'white' backgroundColor:'black'\n", _name);
+    printf("panelLine\n");
 
     print_all();
 
