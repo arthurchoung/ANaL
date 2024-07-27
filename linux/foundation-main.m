@@ -177,30 +177,6 @@ NSOut(@"%@", result);
     }
     exit(0);
 }
-+ (void)table
-{
-    int argc = ANAL_argc;
-    char **argv = ANAL_argv;
-
-    id lines = nil;
-    if (argc > 2) {
-        lines = [nscstr(argv[2]) linesFromFile];
-        if (!lines) {
-NSLog(@"unable to read file '%s'", argv[2]);
-exit(1);
-        }
-    } else {
-        lines = [Definitions linesFromStandardInput];
-NSLog(@"lines %@", lines);
-    }
-    if (lines) {
-        id nav = [Definitions navigationStack];
-        id obj = [lines asTable];
-        [nav pushObject:obj];
-        [Definitions runWindowManagerForObject:nav];
-    }
-    exit(0);
-}
 + (void)alert
 {
     int argc = ANAL_argc;
