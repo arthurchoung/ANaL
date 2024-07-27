@@ -14,4 +14,4 @@ disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
 ,,4,4,"CommandBitmapMenuItem:['anal-printCPUStats.pl' ]",
 ,,4,4,"CommandTextMenuItem:['anal-printNetworkInfo.pl' ]","['anal-commandOutputMenu.pl' 'ifconfig' '-a']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'iwconfig'","['anal-commandOutputMenu.pl' 'iwconfig 2>&1']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
-,,4,4,"CommandTextMenuItem:['anal-printDateEverySecondForTimezone:text:.pl' 'Pacific/Auckland' 'AKL']","configDir:'Menu/dateTimeMenu.csv'|parseCSVFile|asMenu"
+,,4,4,"CommandTextMenuItem:['anal-printDateEverySecond.pl']","configDir:'Menu/dateTimeMenu.csv'|parseCSVFile|asMenu"
