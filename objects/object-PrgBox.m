@@ -327,6 +327,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
     char _buttonDown;
     char _buttonHover;
     int _dialogMode;
+    id _exitStatus;
 }
 @end
 @implementation PrgBox
@@ -351,6 +352,18 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
         [_process handleFileDescriptor:fd];
     }
 }
+- (void)handleProcessID:(int)pid wstatus:(int)wstatus
+{
+NSLog(@"handleProcessID:%d wstatus:%d", pid, wstatus);
+    if (WIFEXITED(wstatus)) {
+        int code = WEXITSTATUS(wstatus);
+        id str = nsfmt(@"Exited normally (%d)", code);
+        [self setValue:str forKey:@"exitStatus"];
+    } else {
+        id str = nsfmt(@"Did not exit normally (PID %d)", pid);
+        [self setValue:str forKey:@"exitStatus"];
+    }
+}
 - (void)endIteration:(id)event
 {
 }
@@ -367,13 +380,18 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
     int y = r.y+16;
 
     {
-        id status = [_process valueForKey:@"status"];
-        if (!status) {
-            int pid = [_process intValueForKey:@"pid"];
-            if (pid) {
-                status = nsfmt(@"Running (PID %d)", pid);
-            } else {
-                status = @"Not Running";
+        id status = nil;
+        if (_exitStatus) {
+            status = _exitStatus;
+        } else {
+            status = [_process valueForKey:@"status"];
+            if (!status) {
+                int pid = [_process intValueForKey:@"pid"];
+                if (pid) {
+                    status = nsfmt(@"Running (PID %d)", pid);
+                } else {
+                    status = @"Not Running";
+                }
             }
         }
         id text = nsfmt(@"Status: %@\nCommand: %@", status, [_command join:@" "]);
