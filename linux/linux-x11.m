@@ -754,7 +754,16 @@ NSLog(@"Another window manager is running");
     pid_t pid;
     int status;
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        NSLog(@"cleaning up child with pid %d", pid);
+NSLog(@"cleaning up child with pid %d", pid);
+        for (int i=0; i<[_objectWindows count]; i++) {
+            id elt = [_objectWindows nth:i];
+            id obj = [elt valueForKey:@"object"];
+            if (obj) {
+                if ([obj respondsToSelector:@selector(handleProcessID:wstatus:)]) {
+                    [obj handleProcessID:pid wstatus:status];
+                }
+            }
+        }
     }
 }
 - (void)reparentAllWindows:(id)reparentClassName
