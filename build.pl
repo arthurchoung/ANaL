@@ -98,6 +98,9 @@ sub ldflagsForFile
     if ($path eq "$execPath/linux/linux-opengl.m") {
         return '-lGL';
     }
+    if ($path eq "$execPath/linux/linux-alsa.m") {
+        return '-lasound';
+    }
     if ($path eq "$execPath/misc/misc-gmime.m") {
         return `pkg-config --libs gmime-3.0`;
     }
