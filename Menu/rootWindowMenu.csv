@@ -4,17 +4,12 @@ hotKey,displayName,messageForClick
 ,,
 "F2",Home,"NSArray|addObject:'anal'|addObject:'open'|addObject:(homeDir)|runCommandInBackground"
 ,,
-,Stopwatch,"['anal' 'Stopwatch']|runCommandInBackground"
-,WorldClock,"['anal' 'WorldClock']|runCommandInBackground"
-,,
 "F9","Toggle Expose Mode","toggleExposeMode"
 ,,
 ,"Take Screenshot of Root Window","['anal-takeScreenshotRootWindow.pl']|runCommandInBackground"
 ,"Take Screenshot of Focus Window","NSArray|addObject:'anal-takeScreenshotForWindow:.pl'|addObject:(currentWindow|window)|runCommandInBackground"
 ,"Take Screenshot with Selection Box","NSArray|addObject:'anal-takeScreenshotSelectionBox.pl'|runCommandInBackground"
 ,"Take Screenshot of Focus Window Content","NSArray|addObject:'anal-takeScreenshotForContentOfWindow:.pl'|addObject:(currentWindow|window)|runCommandInBackground"
-,,
-,"Sync Time with NTP","['anal-syncTimeWithNTP.sh']|runCommandInBackground"
 ,,
 ,"Restart","[ 'anal-performRestart.pl' ]|runCommandInBackground"
 ,"Shutdown","[ 'anal-performShutdown.pl' ]|runCommandInBackground"
