@@ -147,13 +147,13 @@ static unsigned char *button_bottom_right_squared =
 
 
 @implementation Definitions(fjkdlsjfklsdjfklsdfjdksjfkdsfjdskfjksdljfjjfdksjfksd)
-+ (id)WorldClock
++ (id)TimeZones
 {
-    return [Definitions WorldClock:nil];
+    return [Definitions TimeZones:nil];
 }
-+ (id)WorldClock:(id)region
++ (id)TimeZones:(id)region
 {
-    id obj = [@"WorldClock" asInstance];
+    id obj = [@"TimeZones" asInstance];
     [obj setValue:region forKey:@"region"];
     [obj updateArrayAndTimestamp];
     id nav = [Definitions navigationStack];
@@ -163,7 +163,7 @@ static unsigned char *button_bottom_right_squared =
 @end
 
 
-@interface WorldClock : IvarObject
+@interface TimeZones : IvarObject
 {
     id _currentDirectory;
     time_t _timestamp;
@@ -187,7 +187,7 @@ static unsigned char *button_bottom_right_squared =
     id _region;
 }
 @end
-@implementation WorldClock
+@implementation TimeZones
 - (id)hoverObject
 {
     if (_buttonHover) {
@@ -281,9 +281,20 @@ static unsigned char *button_bottom_right_squared =
     if (!elt) {
         return;
     }
-    id obj = [Definitions WorldClock:elt];
-    id nav = [Definitions navigationStack];
-    [nav pushObject:obj];
+    if (_region) {
+        id tz = [elt valueForKey:@"TZ"];
+        id path = [Definitions configDir:@"Prefs/timezone.txt"];
+        [tz writeToFile:path];
+        id cmd = nsarr();
+        [cmd addObject:@"touch"];
+        [cmd addObject:[Definitions configDir:@"Menu/menuBar.csv"]];
+        [cmd runCommandAndReturnOutput];
+        exit(0);
+    } else {
+        id obj = [Definitions TimeZones:elt];
+        id nav = [Definitions navigationStack];
+        [nav pushObject:obj];
+    }
 }
 
 - (void)drawInBitmap:(id)bitmap rect:(Int4)r
@@ -297,11 +308,11 @@ static unsigned char *button_bottom_right_squared =
     [self panelStripedBackground];
     if (_region) {
         [self panelText:@""];
-        [self panelText:nsfmt(@"World Clock: %@", _region)];
+        [self panelText:nsfmt(@"Time Zones: %@", _region)];
         [self panelText:@""];
     } else {
         [self panelText:@""];
-        [self panelText:@"World Clock"];
+        [self panelText:@"Time Zones"];
         [self panelText:@""];
         [self panelText:@"Choose a region:"];
         [self panelText:@""];
@@ -330,9 +341,9 @@ static unsigned char *button_bottom_right_squared =
         } else {
             [self panelMiddleButton:text index:i];
         }
-        if ((_buttonDown-1 == index) && (_buttonDown == _buttonHover)) {
+        if ((_buttonDown-1 == i) && (_buttonDown == _buttonHover)) {
             [bitmap setColor:@"white"];
-        } else if (!_buttonDown && (_buttonHover-1 == index)) {
+        } else if (!_buttonDown && (_buttonHover-1 == i)) {
             [bitmap setColor:@"white"];
         } else {
             [bitmap setColor:@"black"];
