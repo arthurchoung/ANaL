@@ -25,38 +25,6 @@
 
 #import "ANAL.h"
 
-// for compatibility
-// CommandOutputText has been renamed to CommandTextMenuItem
-@implementation Definitions(fjkdlsfjjfdksjfklksdejwklfmksldmfklsdmfklsdjkf)
-+ (id)CommandOutputText:(id)cmd
-{
-    id process = [cmd runCommandAndReturnProcess];
-    id obj = [@"CommandTextMenuItem" asInstance];
-    [obj setValue:cmd forKey:@"command"];
-    [obj setValue:process forKey:@"fileDescriptor"];
-    return obj;
-}
-+ (id)CommandOutputText:(id)cmd lineMessage:(id)lineMessage
-{
-    id obj = [Definitions CommandTextMenuItem:cmd];
-    [obj setValue:lineMessage forKey:@"lineMessage"];
-    return obj;
-}
-+ (id)CommandOutputText:(id)cmd stringFormat:(id)stringFormat
-{
-    id obj = [Definitions CommandTextMenuItem:cmd];
-    [obj setValue:stringFormat forKey:@"stringFormat"];
-    return obj;
-}
-+ (id)CommandOutputText:(id)cmd lineMessage:(id)lineMessage stringFormat:(id)stringFormat
-{
-    id obj = [Definitions CommandTextMenuItem:cmd];
-    [obj setValue:lineMessage forKey:@"lineMessage"];
-    [obj setValue:stringFormat forKey:@"stringFormat"];
-    return obj;
-}
-@end
-
 @implementation Definitions(fjkdlsfjlksdejwklfmksldmfklsdmfklsdjkf)
 + (id)CommandTextMenuItem:(id)cmd
 {

@@ -25,18 +25,6 @@
 
 #import "ANAL.h"
 
-// for compatibility
-// CommandOutputBitmap has been renamed to CommandBitmapMenuItem
-@implementation Definitions(fjkdlsjkfjkdfjlksdjdskfldsjkfjfkdlsmfkldsmkfljkf)
-+ (id)CommandOutputBitmap:(id)cmd
-{
-    id process = [cmd runCommandAndReturnProcess];
-    id obj = [@"CommandBitmapMenuItem" asInstance];
-    [obj setValue:process forKey:@"fileDescriptor"];
-    return obj;
-}
-@end
-
 @implementation Definitions(fjkdlsfjlksdjdskfldsjkfjfkdlsmfkldsmkfljkf)
 + (id)CommandBitmapMenuItem:(id)cmd
 {
