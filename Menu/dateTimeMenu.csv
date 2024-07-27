@@ -1,3 +1,11 @@
-displayName,messageForClick
+stringFormat,messageForClick
+"#{configDir:'Prefs/timezone.txt'|stringFromFile|chomp}",
+,
+"Select Time Zone...","['anal' 'TimeZones']|runCommandInBackground"
+,
 "Open Calendar Panel...","['anal' 'show' 'CalendarSingleColumnNoEvents']|runCommandInBackground"
 "Open Calendar Year Panel...","['anal' 'show' 'CalendarNoEvents']|runCommandInBackground"
+,
+Stopwatch,"['anal' 'Stopwatch']|runCommandInBackground"
+,
+"Sync Time with NTP","['anal-syncTimeWithNTP.sh']|runCommandInBackground"
