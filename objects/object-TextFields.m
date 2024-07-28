@@ -637,7 +637,7 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
             _cursorPos--;
         }
         _cursorBlink = 1;
-    } else if ([str isEqual:@"return"]) {
+    } else if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
         _returnKeyDown = YES;
     } else if ([str isEqual:@"tab"]) {
         if ([_fields count] > 1) {
@@ -662,7 +662,7 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
 - (void)handleKeyUp:(id)event
 {
     id str = [event valueForKey:@"keyString"];
-    if ([str isEqual:@"return"]) {
+    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
         if (_returnKeyDown) {
             if (_dialogMode) {
                 [self exitWithDialogMode];

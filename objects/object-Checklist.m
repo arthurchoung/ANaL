@@ -604,15 +604,15 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
 }
 - (void)handleKeyDown:(id)event
 {
-    id keyString = [event valueForKey:@"keyString"];
-    if ([keyString isEqual:@"return"]) {
+    id str = [event valueForKey:@"keyString"];
+    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
         _returnKeyDown = YES;
     }
 }
 - (void)handleKeyUp:(id)event
 {
     id str = [event valueForKey:@"keyString"];
-    if ([str isEqual:@"return"]) {
+    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
         if (_returnKeyDown) {
             if (_dialogMode) {
                 [self exitWithDialogMode];
