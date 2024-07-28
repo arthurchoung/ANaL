@@ -443,7 +443,7 @@ NSLog(@"unable to run command %@", cmd);
 + (void)about
 {
     id cmd = nsarr();
-    [cmd addObject:@"anal-aboutOverview.pl"];
+    [cmd addObject:@"anal-about-text.pl"];
     id text = [[cmd runCommandAndReturnOutput] asString];
     cmd = nsarr();
     [cmd addObject:@"anal"];
@@ -454,7 +454,7 @@ NSLog(@"unable to run command %@", cmd);
     id output = [[[cmd runCommandAndReturnOutput] asString] chomp];
     if ([output isEqual:@"More Info..."]) {
         cmd = nsarr();
-        [cmd addObject:@"anal-aboutMoreInfo.pl"];
+        [cmd addObject:@"anal-about-moreText.pl"];
         id text = [[cmd runCommandAndReturnOutput] asString];
         cmd = nsarr();
         [cmd addObject:@"anal"];
