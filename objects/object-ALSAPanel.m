@@ -200,7 +200,7 @@ static unsigned char *button_bottom_right_squared =
 + (id)ALSAPanel:(id)name :(id)text
 {
     id generatecmd = nsarr();
-    [generatecmd addObject:@"anal-generateALSAPanel"];
+    [generatecmd addObject:@"anal-alsa-generatePanel"];
     [generatecmd addObject:name];
     [generatecmd addObject:text];
     id lines = [[[generatecmd runCommandAndReturnOutput] asString] split:@"\n"];
