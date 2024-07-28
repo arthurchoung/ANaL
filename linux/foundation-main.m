@@ -434,11 +434,34 @@ NSLog(@"unable to run command %@", cmd);
     int argc = ANAL_argc;
     char **argv = ANAL_argv;
 
-    if (argc > 3) {
+    if (argc > 2) {
         char *classPrefix = "";
-        [Definitions dialog:classPrefix :argc-3 :&argv[3]];
+        [Definitions dialog:classPrefix :argc-2 :&argv[2]];
     }
     exit(-1);
+}
++ (void)about
+{
+    id cmd = nsarr();
+    [cmd addObject:@"anal-aboutOverview.pl"];
+    id text = [[cmd runCommandAndReturnOutput] asString];
+    cmd = nsarr();
+    [cmd addObject:@"anal"];
+    [cmd addObject:@"confirm"];
+    [cmd addObject:@"OK"];
+    [cmd addObject:@"More Info..."];
+    [cmd addObject:text];
+    id output = [[[cmd runCommandAndReturnOutput] asString] chomp];
+    if ([output isEqual:@"More Info..."]) {
+        cmd = nsarr();
+        [cmd addObject:@"anal-aboutMoreInfo.pl"];
+        id text = [[cmd runCommandAndReturnOutput] asString];
+        cmd = nsarr();
+        [cmd addObject:@"anal"];
+        [cmd addObject:@"alert"];
+        [cmd addObject:text];
+        [cmd runCommandAndReturnOutput];
+    }
 }
 @end
 
