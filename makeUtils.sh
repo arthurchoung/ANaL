@@ -2,7 +2,7 @@
 
 set -x
 
-gcc -o anal-generateALSAPanel anal-generateALSAPanel.c -lasound
+gcc -o anal-alsa-generatePanel anal-alsa-generatePanel.c -lasound
 gcc -o anal-printALSAUpdates anal-printALSAUpdates.c -lasound
 gcc -o anal-printALSAStatus anal-printALSAStatus.c -lasound
 gcc -o anal-printALSAFirstElement anal-printALSAFirstElement.c -lasound
