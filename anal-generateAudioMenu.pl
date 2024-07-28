@@ -28,7 +28,7 @@ foreach $line (@lines) {
 =id=$id
 =name=$name
 =stringFormat=#{name} (#{id})
-=messageForClick=NSArray|addObject:'anal-selectAudioDevice.pl'|addObject:'$num'|runCommandInBackground
+=messageForClick=NSArray|addObject:'anal-alsa-selectDevice.pl'|addObject:'$num'|runCommandInBackground
 ==
 EOF
         $count++;
