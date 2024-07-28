@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-$output = `dmidecode --type 17`;
+$output = `sudo -A dmidecode --type 17`;
 @lines = split "\n", $output;
 
 @results = ();
@@ -41,6 +41,11 @@ foreach $line (@lines) {
 }
 
 push @results, $dict;
+
+print <<EOF;
+Memory:
+
+EOF
 
 @results = sort { $a->{'locator'} cmp $b->{'locator'} } @results;
 foreach $elt (@results) {
