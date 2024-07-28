@@ -14,5 +14,6 @@ hotKey,displayName,messageForClick
 ,"Restart","[ 'anal-performRestart.pl' ]|runCommandInBackground"
 ,"Shutdown","[ 'anal-performShutdown.pl' ]|runCommandInBackground"
 ,,
-,"About This Computer","['anal' 'AboutThisComputer']|runCommandInBackground"
 ,"Help","['anal' 'AmigaGuide']|runCommandInBackground"
+,,
+,"About...","['anal' 'about']|runCommandInBackground"
