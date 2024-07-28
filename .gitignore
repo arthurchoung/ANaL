@@ -1,7 +1,7 @@
 Build
 Temp
 anal
-anal-generateALSAPanel
+anal-alsa-generatePanel
 anal-monitorBlockDevices
 anal-monitorNetworkInterfaces
 anal-monitorMonitors
