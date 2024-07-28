@@ -42,7 +42,7 @@ static double normalizedYForRect_insideRect_(Int4 innerRect, Int4 outerRect)
 {
     id name = [Definitions currentAudioDevice];
     id cmd = nsarr();
-    [cmd addObject:@"anal-printALSAFirstElement"];
+    [cmd addObject:@"anal-alsa-printFirstElement"];
     [cmd addObject:name];
     id element = [[cmd runCommandAndReturnOutput] asString];
     if ([element length]) {
@@ -148,7 +148,7 @@ static char *sliderKnobPixels =
 - (void)setup
 {
     id cmd = nsarr();
-    [cmd addObject:@"anal-printALSAStatus"];
+    [cmd addObject:@"anal-alsa-printStatus"];
     if (_alsaCardName) {
         [cmd addObject:_alsaCardName];
         if (_alsaMixerName) {
@@ -159,7 +159,7 @@ static char *sliderKnobPixels =
     [self setValue:alsaStatus forKey:@"alsaStatus"];
 
     cmd = nsarr();
-    [cmd addObject:@"anal-setALSAVolume"];
+    [cmd addObject:@"anal-alsa-setVolume"];
     if (_alsaCardName) {
         [cmd addObject:_alsaCardName];
         if (_alsaMixerName) {
@@ -244,7 +244,7 @@ NSLog(@"alsaStatus '%@'", line);
             static BOOL alreadyRun = NO;
             if (!alreadyRun) {
                 id cmd = nsarr();
-                [cmd addObject:@"anal-setALSAMute"];
+                [cmd addObject:@"anal-alsa-setMute"];
                 [cmd addObject:@"0"];
                 if (_alsaCardName) {
                     [cmd addObject:_alsaCardName];
