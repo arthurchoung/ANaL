@@ -402,6 +402,8 @@ NSLog(@"showAlert:'%@'", self);
     int _returnKey;
     int _didFocusOut;
     int _backgroundCount;
+
+    int _scrollY;
 }
 @end
 
@@ -449,7 +451,7 @@ NSLog(@"showAlert:'%@'", self);
     int textWidth = (int)r.w - 32;
     id text = [bitmap fitBitmapString:_text width:textWidth];
     [bitmap setColor:@"black"];
-    [bitmap drawBitmapText:text x:16 y:16];
+    [bitmap drawBitmapText:text x:16 y:16+_scrollY];
 
     // ok button
 
@@ -493,6 +495,12 @@ NSLog(@"showAlert:'%@'", self);
 
     if (_cancelText) {
         _cancelRect = [Definitions rectWithX:_okRect.x-70-8 y:r.h-8-27 w:70 h:27];
+
+        int cancelTextWidth = 2 + 8 + [bitmap bitmapWidthForText:_cancelText] + 8;
+        if (cancelTextWidth > _cancelRect.w) {
+            _cancelRect.x -= cancelTextWidth-_cancelRect.w;
+            _cancelRect.w = cancelTextWidth;
+        }
 
         Int4 innerRect = _cancelRect;
         innerRect.y += 2;
@@ -557,6 +565,7 @@ NSLog(@"showAlert:'%@'", self);
             if (_dialogMode) {
                 exit(1);
             }
+            NSOut(@"%@\n", _cancelText);
             id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         }
@@ -567,14 +576,14 @@ NSLog(@"showAlert:'%@'", self);
 - (void)handleKeyDown:(id)event
 {
     id str = [event valueForKey:@"keyString"];
-    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"]) {
+    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
         _returnKey = 1;
     }
 }
 - (void)handleKeyUp:(id)event
 {
     id str = [event valueForKey:@"keyString"];
-    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"]) {
+    if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
         if (_returnKey) {
             if (_dialogMode) {
                 exit(0);
@@ -594,6 +603,11 @@ NSLog(@"showAlert:'%@'", self);
         }
     }
     _didFocusOut = 1;
+}
+- (void)handleScrollWheel:(id)event
+{
+    int dy = [event intValueForKey:@"scrollingDeltaY"];
+    _scrollY -= dy;
 }
 @end
 
