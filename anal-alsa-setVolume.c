@@ -56,7 +56,7 @@ void write_alsa_volume(double volume)
 
 /*
 
-Usage: anal-setALSAVolume [card name] [mixer name]
+Usage: anal-alsa-setVolume [card name] [mixer name]
 
 Reads a line from stdin
 If the line is a floating point value, sets the volume to that number

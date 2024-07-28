@@ -75,7 +75,7 @@ cleanup:
 
 /*
 
-Usage: anal-setALSAVolume [card name]
+Usage: anal-alsa-setVolume [card name]
 
 Reads from stdin
 

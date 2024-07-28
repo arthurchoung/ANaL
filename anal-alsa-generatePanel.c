@@ -169,7 +169,7 @@ cleanup:
 
 /*
 
-Usage: anal-printALSAStatus [card name] [mixer name]
+Usage: anal-alsa-generatePanel [card name] [mixer name]
 
 'card name' is 'hw:0' by default
 'mixer name' is 'Master' by default

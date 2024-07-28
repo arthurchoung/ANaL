@@ -253,7 +253,7 @@ fprintf(stderr, "Unable to open file '%s'\n", pathbuf);
 
 /*
 
-Usage: anal-printALSAStatus [card name] [mixer name]
+Usage: anal-alsa-printStatus [card name] [mixer name]
 
 'card name' is 'hw:0' by default
 'mixer name' is 'Master' by default

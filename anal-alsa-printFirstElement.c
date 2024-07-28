@@ -87,7 +87,7 @@ cleanup:
 
 /*
 
-Usage: anal-printALSAStatus [card name]
+Usage: anal-alsa-printFirstElement [card name]
 
 'card name' is 'hw:0' by default
 
