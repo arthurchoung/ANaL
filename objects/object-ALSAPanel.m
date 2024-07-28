@@ -206,7 +206,7 @@ static unsigned char *button_bottom_right_squared =
     id lines = [[[generatecmd runCommandAndReturnOutput] asString] split:@"\n"];
 
     id inputcmd = nsarr();
-    [inputcmd addObject:@"anal-printALSAUpdates"];
+    [inputcmd addObject:@"anal-alsa-printUpdates"];
     [inputcmd addObject:name];
     id inputProcess = [inputcmd runCommandAndReturnProcess];
     if (!inputProcess) {
@@ -215,7 +215,7 @@ exit(1);
     }
 
     id outputcmd = nsarr();
-    [outputcmd addObject:@"anal-setALSAValues"];
+    [outputcmd addObject:@"anal-alsa-setValues"];
     [outputcmd addObject:name];
     id outputProcess = [outputcmd runCommandAndReturnProcess];
     if (!outputProcess) {
