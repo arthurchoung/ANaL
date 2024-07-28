@@ -8,7 +8,7 @@ disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
 1,,4,4,"TextMenuItem:'Camera'","['anal-generateVideoCamerasMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"CommandTextMenuItem:['anal-monitorMonitors'] lineMessage:[setupMonitors] stringFormat:'Mon #{currentMonitorIndexName}'","NSArray|addObject:'anal-generateMenuForMonitor:path:.pl'|addObject:(currentMonitorName)|addObject:(configDir:'Temp/listMonitors.txt')|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"TextMenuItem:'Clip'","['anal-generateClipboardMenu.pl']|runCommandAndReturnOutput|asString|parseCSVFromString|asMenu"
-,,4,4,"TextMenuItem:'Audio'","['anal-generateAudioMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
+,,4,4,"TextMenuItem:'Audio'","['anal-alsa-generateMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"CommandTextMenuItem:['anal-alsa-printStatus'] stringFormat:'Volume: #{ifTrue:[playbackSwitch] then:[PercentString:(volume|times:100|intValue)] else:[MuteString]}'","VolumeMenu"
 ,,4,4,"CommandTextMenuItem:['anal-printBatteryStatus.pl' ]",
 ,,4,4,"CommandBitmapMenuItem:['anal-printCPUStats.pl' ]",
