@@ -9,7 +9,7 @@ if ($arg eq 'lo') {
     exit 0;
 }
 
-@lines = `anal-listNetworkInterfaces.pl`;
+@lines = `anal-network-listInterfaces.pl`;
 chomp @lines;
 
 foreach $line (@lines) {
@@ -75,7 +75,7 @@ foreach $line (@lines) {
     $result = `$cmd`;
     chomp $result;
     if ($result eq 'dhcpcd') {
-        system('anal-connectNetworkInterface.pl', $interface);
+        system('anal-network-connectInterface.pl', $interface);
     } elsif ($result eq 'killdhcpcd') {
         system('sudo', '-A', 'kill', '-9', $dhcpcd);
     } elsif ($result eq 'ifconfigup') {
