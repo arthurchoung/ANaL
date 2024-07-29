@@ -6,7 +6,7 @@ disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
 ,,4,4,"TextMenuItem:'lsblk'","['anal-commandOutputMenu.pl' 'lsblk' '-i' '-o' 'NAME,FSTYPE,FSVER,LABEL,FSAVAIL,FSUSE%,MOUNTPOINTS']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'Window'","configDir:'Menu/windowMenu.csv'|parseCSVFile|asMenu"
 1,,4,4,"TextMenuItem:'Camera'","['anal-generateVideoCamerasMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
-,,4,4,"CommandTextMenuItem:['anal-monitorMonitors'] lineMessage:[setupMonitors] stringFormat:'Mon #{currentMonitorIndexName}'","NSArray|addObject:'anal-generateMenuForMonitor:path:.pl'|addObject:(currentMonitorName)|addObject:(configDir:'Temp/listMonitors.txt')|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
+,,4,4,"CommandTextMenuItem:['anal-monitor-monitorEvents'] lineMessage:[setupMonitors] stringFormat:'Mon #{currentMonitorIndexName}'","NSArray|addObject:'anal-monitor-generateMenuForMonitor:path:.pl'|addObject:(currentMonitorName)|addObject:(configDir:'Temp/listMonitors.txt')|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"TextMenuItem:'Clip'","['anal-generateClipboardMenu.pl']|runCommandAndReturnOutput|asString|parseCSVFromString|asMenu"
 ,,4,4,"TextMenuItem:'Audio'","['anal-alsa-generateMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"CommandTextMenuItem:['anal-alsa-printStatus'] stringFormat:'Volume: #{ifTrue:[playbackSwitch] then:[PercentString:(volume|times:100|intValue)] else:[MuteString]}'","VolumeMenu"
