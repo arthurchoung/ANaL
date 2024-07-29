@@ -12,6 +12,6 @@ disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
 ,,4,4,"CommandTextMenuItem:['anal-alsa-printStatus'] stringFormat:'Volume: #{ifTrue:[playbackSwitch] then:[PercentString:(volume|times:100|intValue)] else:[MuteString]}'","VolumeMenu"
 ,,4,4,"CommandTextMenuItem:['anal-printBatteryStatus.pl' ]",
 ,,4,4,"CommandBitmapMenuItem:['anal-printCPUStats.pl' ]",
-,,4,4,"CommandTextMenuItem:['anal-printNetworkInfo.pl' ]","['anal-commandOutputMenu.pl' 'ifconfig' '-a']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
+,,4,4,"CommandTextMenuItem:['anal-network-printInfo.pl' ]","['anal-commandOutputMenu.pl' 'ifconfig' '-a']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'iwconfig'","['anal-commandOutputMenu.pl' 'iwconfig 2>&1']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"CommandTextMenuItem:['anal-printDateEverySecond.pl']","configDir:'Menu/dateTimeMenu.csv'|parseCSVFile|asMenu"
