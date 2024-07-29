@@ -14,7 +14,7 @@ $baseDir = `anal configDir`;
 chomp $baseDir;
 chdir $baseDir;
 
-system("cat Temp/listMonitors.txt | anal-modifyToSwapMonitors::.pl $matchName1 $matchName2 >Temp/monitors.txt");
+system("cat Temp/listMonitors.txt | anal-monitor-modifyToSwapMonitors::.pl $matchName1 $matchName2 >Temp/monitors.txt");
 
-system('anal-setupMonitors.pl');
+system('anal-monitor-setupMonitors.pl');
 
