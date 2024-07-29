@@ -52,7 +52,7 @@
 + (void)setupMonitors
 {
     id cmd = nsarr();
-    [cmd addObject:@"anal-setupMonitors.pl"];
+    [cmd addObject:@"anal-monitor-setupMonitors.pl"];
     [cmd runCommandInBackground];
 }
 
