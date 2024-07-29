@@ -18,19 +18,19 @@ displayName,messageForClick
 ==
 =arg=$arg
 =displayName=Portrait (left)
-=messageForClick=NSArray|addObject:'anal-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'left'|runCommandInBackground
+=messageForClick=NSArray|addObject:'anal-monitor-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'left'|runCommandInBackground
 ==
 =arg=$arg
 =displayName=Portrait (right)
-=messageForClick=NSArray|addObject:'anal-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'right'|runCommandInBackground
+=messageForClick=NSArray|addObject:'anal-monitor-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'right'|runCommandInBackground
 ==
 =arg=$arg
 =displayName=Landscape (normal)
-=messageForClick=NSArray|addObject:'anal-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'normal'|runCommandInBackground
+=messageForClick=NSArray|addObject:'anal-monitor-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'normal'|runCommandInBackground
 ==
 =arg=$arg
 =displayName=Landscape (inverted)
-=messageForClick=NSArray|addObject:'anal-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'inverted'|runCommandInBackground
+=messageForClick=NSArray|addObject:'anal-monitor-rotateMonitor:orientation:.pl'|addObject:arg|addObject:'inverted'|runCommandInBackground
 ==
 ==
 EOF
@@ -59,7 +59,7 @@ EOF
 =arg=$arg
 =name=$name
 =stringFormat=#{i}. Swap Monitor with #{name}
-=messageForClick=NSArray|addObject:'anal-swapMonitors::.pl'|addObject:arg|addObject:name|runCommandInBackground
+=messageForClick=NSArray|addObject:'anal-monitor-swapMonitors::.pl'|addObject:arg|addObject:name|runCommandInBackground
 ==
 EOF
     }
