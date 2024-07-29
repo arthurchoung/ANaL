@@ -28,7 +28,7 @@ if ($cmd =~ m/^anal-generateDiskMenu/) {
 
 if ($cmd =~ m/^ifconfig\b/) {
     if ($line =~ m/^([a-z0-9]+):/) {
-        system('anal-handleNetworkMenuForInterface:.pl', $1);
+        system('anal-network-handleMenuForInterface:.pl', $1);
         exit 0;
     }
     $text = <<EOF;
