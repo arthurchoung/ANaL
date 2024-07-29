@@ -8,5 +8,5 @@ anal-alsa-printUpdates
 anal-alsa-setMute:
 anal-alsa-setValues
 anal-alsa-setVolume
-anal-monitorMonitors
+anal-monitor-monitorEvents
 anal-packRectanglesIntoWidth:height:...
