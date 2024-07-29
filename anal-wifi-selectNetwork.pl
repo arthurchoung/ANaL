@@ -11,7 +11,7 @@ if (not $interface) {
 
 system('sudo', '-A', 'ifconfig', $interface, 'up');
 
-$choice = `anal-generateWifiNetworksPanel.pl | anal show WifiNetworksPanel`;
+$choice = `anal-wifi-generatePanel.pl | anal show WifiNetworksPanel`;
 chomp $choice;
 if (not $choice) {
 exit 0;
@@ -84,7 +84,7 @@ if ($choice =~ m/\bencryption:on/) {
         }
     }
     if ($password ne '') {
-        system('anal-runWPASupplicantForInterface:essid:password:.pl', $interface, $essid, $password);
+        system('anal-wifi-runWPASupplicantForInterface:essid:password:.pl', $interface, $essid, $password);
     }
 } else {
     system('sudo', '-A', 'iwconfig', $interface, 'essid', $essid);

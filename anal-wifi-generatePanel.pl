@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-@lines = `sudo -A anal-scanNetworks.pl | anal-reverseNumericSortForKey:.pl quality`;
+@lines = `sudo -A anal-wifi-scanNetworks.pl | anal-reverseNumericSortForKey:.pl quality`;
 chomp @lines;
 
 print <<EOF;

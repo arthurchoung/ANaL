@@ -127,7 +127,7 @@ if ($cmd =~ m/^xinput\b/) {
 
 if ($cmd =~ m/^iwconfig\b/) {
     if ($line =~ m/^([a-z0-9]+)/) {
-        system('anal-selectWifiNetwork.pl', $1);
+        system('anal-wifi-selectNetwork.pl', $1);
         exit 0;
     }
     $text = <<EOF;
