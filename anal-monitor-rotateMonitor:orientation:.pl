@@ -10,7 +10,7 @@ $baseDir = `anal configDir`;
 chomp $baseDir;
 chdir $baseDir;
 
-system("cat Temp/listMonitors.txt | anal-modifyToRotateMonitor:orientation:.pl $matchName $orientation >Temp/monitors.txt");
+system("cat Temp/listMonitors.txt | anal-monitor-modifyToRotateMonitor:orientation:.pl $matchName $orientation >Temp/monitors.txt");
 
-system('anal-setupMonitors.pl');
+system('anal-monitor-setupMonitors.pl');
 
