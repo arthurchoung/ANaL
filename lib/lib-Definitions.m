@@ -30,11 +30,15 @@
 
 id nsarr()//$;
 {
-    return [NSArray array];
+    return [[[NSArray alloc] init] autorelease];
 }
 id nsdict()//$;
 {
-    return [NSDictionary dictionary];
+    return [[[NSDictionary alloc] init] autorelease];
+}
+id nsdata()//$;
+{
+    return [[[NSData alloc] init] autorelease];
 }
 id nsfmt(id formatString, ...)///$;
 {
@@ -141,7 +145,7 @@ id nscstrn(char *str, int len)//$;
     if (!len) {
         return nil;
     }
-    id result = [NSData dataWithCapacity:len];
+    id result = [Definitions dataWithCapacity:len];
 
     unsigned char *base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     int base64numchars = strlen(base64chars);
