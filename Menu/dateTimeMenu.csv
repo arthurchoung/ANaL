@@ -1,5 +1,5 @@
 stringFormat,messageForClick
-"#{configDir:'Prefs/timezone.txt'|stringFromFile|chomp}",
+"#{analDir:'Prefs/timezone.txt'|stringFromFile|chomp}",
 ,
 "Select Time Zone...","['anal' 'TimeZones']|runCommandInBackground"
 ,
