@@ -25,44 +25,24 @@
 
 #import "ANAL.h"
 
-@implementation Definitions(fjkdsljfklsdjf)
-+ (id)configDir
-{
-    id execDir = [Definitions execDir];
-    if ([execDir isEqual:@"/usr/bin"]) {
-        id homeConfigDir = [Definitions homeDir:@"ANaL"];
-        if ([homeConfigDir isDirectory]) {
-            return homeConfigDir;
-        }
-        return @"/etc/ANaL";
-    }
-    return execDir;
-}
-
-+ (id)configDir:(id)path
-{
-    return nsfmt(@"%@/%@", [Definitions configDir], path);
-}
-@end
-
 @implementation Definitions(jfkldsjklfjdsklfjlksdklfj)
-+ (id)execDir:(id)str
++ (id)analDir:(id)str
 {
-    return nsfmt(@"%@/%@", [Definitions execDir], str);
+    return nsfmt(@"%@/%@", [Definitions analDir], str);
 }
-+ (id)execDir
++ (id)analDir
 {
-    static id execDir = nil;
-    if (execDir) {
-        return execDir;
+    static id analDir = nil;
+    if (analDir) {
+        return analDir;
     }
     char buf[1024];
     int result = readlink("/proc/self/exe", buf, 1023);
     if ((result > 0) && (result < 1024)) {
-        execDir = [[[NSString alloc] initWithBytes:buf length:result] autorelease];
-        execDir = [[execDir stringByDeletingLastPathComponent] retain];
+        analDir = [[[NSString alloc] initWithBytes:buf length:result] autorelease];
+        analDir = [[analDir stringByDeletingLastPathComponent] retain];
     }
-    return execDir;
+    return analDir;
 }
 @end
 
@@ -77,7 +57,7 @@
 {
     char *home = getenv("HOME");
     if (!home) {
-        return [self execDir];
+        return [self analDir];
     }
     return nsfmt(@"%s", home);
 }
