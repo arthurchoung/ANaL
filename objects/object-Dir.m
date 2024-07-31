@@ -321,9 +321,9 @@ static unsigned char *button_bottom_right_squared =
         } else {
             [self panelMiddleButton:displayName index:i];
         }
-        if ((_buttonDown-1 == index) && (_buttonDown == _buttonHover)) {
+        if ((_buttonDown-1 == i) && (_buttonDown == _buttonHover)) {
             [bitmap setColor:@"white"];
-        } else if (!_buttonDown && (_buttonHover-1 == index)) {
+        } else if (!_buttonDown && (_buttonHover-1 == i)) {
             [bitmap setColor:@"white"];
         } else {
             [bitmap setColor:@"black"];
