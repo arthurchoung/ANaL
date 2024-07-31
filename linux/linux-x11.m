@@ -46,35 +46,39 @@ static XImage *CreateTrueColorImage(Display *display, Visual *visual, unsigned c
     return XCreateImage(display, visual, depth, ZPixmap, 0, image32, width, height, 32, 0);
 }
 
+static id _windowManager = nil;
+
 @implementation Definitions(fjdklsjfkldsjklfjs)
+
++ (id)windowManager
+{
+    return _windowManager;
+}
 
 + (id)currentWindow
 {
-    id windowManager = [@"windowManager" valueForKey];
-    id focusDict = [windowManager valueForKey:@"focusDict"];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id focusDict = [_windowManager valueForKey:@"focusDict"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (focusDict == menuBar) {
         return nil;
     }
     return focusDict;
 }
-+ (void)x11FixupEvent:(id)eventDict forBitmapObject:(id)object
++ (void)x11FixupEvent:(id)eventDict forBitmapObject:(id)object x11dict:(id)x11dict
 {
     if ([object respondsToSelector:@selector(bitmapWidth)]) {
         if ([object respondsToSelector:@selector(bitmapHeight)]) {
             int bitmapWidth = [object bitmapWidth]; 
             int bitmapHeight = [object bitmapHeight];
             if (bitmapWidth && bitmapHeight) {
-                int viewWidth = [eventDict intValueForKey:@"viewWidth"];
-                int viewHeight = [eventDict intValueForKey:@"viewHeight"];
+                int x11W = [x11dict intValueForKey:@"w"];
+                int x11H = [x11dict intValueForKey:@"h"];
                 int mouseX = [eventDict intValueForKey:@"mouseX"];
                 int mouseY = [eventDict intValueForKey:@"mouseY"];
-                int adjustedX = (double)mouseX / ((double)viewWidth/(double)bitmapWidth);
-                int adjustedY = (double)mouseY / ((double)viewHeight/(double)bitmapHeight);
+                int adjustedX = (double)mouseX / ((double)x11W/(double)bitmapWidth);
+                int adjustedY = (double)mouseY / ((double)x11H/(double)bitmapHeight);
                 [eventDict setValue:nsfmt(@"%d", adjustedX) forKey:@"mouseX"];
                 [eventDict setValue:nsfmt(@"%d", adjustedY) forKey:@"mouseY"];
-                [eventDict setValue:nsfmt(@"%d", bitmapWidth) forKey:@"viewWidth"];
-                [eventDict setValue:nsfmt(@"%d", bitmapHeight) forKey:@"viewHeight"];
             }
         }
     }
@@ -90,14 +94,10 @@ static XImage *CreateTrueColorImage(Display *display, Visual *visual, unsigned c
         return;
     }
 
-    int viewWidth = [eventDict intValueForKey:@"viewWidth"];
-    int viewHeight = [eventDict intValueForKey:@"viewHeight"];
     int mouseX = [eventDict intValueForKey:@"mouseX"];
     int mouseY = [eventDict intValueForKey:@"mouseY"];
     [eventDict setValue:nsfmt(@"%d", mouseX / scaling) forKey:@"mouseX"];
     [eventDict setValue:nsfmt(@"%d", mouseY / scaling) forKey:@"mouseY"];
-    [eventDict setValue:nsfmt(@"%d", viewWidth / scaling) forKey:@"viewWidth"];
-    [eventDict setValue:nsfmt(@"%d", viewHeight / scaling) forKey:@"viewHeight"];
 }
 @end
 
@@ -440,16 +440,16 @@ NSLog(@"unable to set signal handler for SIGINT");
 NSLog(@"unable to set signal handler for SIGTERM");
     }
     [Definitions setupMonitors];
-    id windowManager = [@"WindowManager" asInstance];
-    [windowManager setAsValueForKey:@"windowManager"];
-    [windowManager setupX11];
-    [windowManager setupWindowManager];
-[windowManager grabHotKeys];
-    [windowManager setValue:message forKey:@"pendingMessage"];
-    [windowManager runLoop];
+    _windowManager = [@"WindowManager" asInstance];
+    [_windowManager retain];
+    [_windowManager setupX11];
+    [_windowManager setupWindowManager];
+[_windowManager grabHotKeys];
+    [_windowManager setValue:message forKey:@"pendingMessage"];
+    [_windowManager runLoop];
 NSLog(@"exited windowManager runLoop");
-    [@"windowManager" setNilValueForKey];
-NSLog(@"windowManager setNilValueForKey");
+    [_windowManager autorelease];
+    _windowManager = nil;
 }
 + (void)runWindowManagerForObject:(id)object
 {
@@ -471,15 +471,15 @@ NSLog(@"windowManager setNilValueForKey");
 }
 + (void)runWindowManagerForObject:(id)object x:(int)x y:(int)y w:(int)w h:(int)h
 {
-    id windowManager = [@"WindowManager" asInstance];
-    [windowManager setAsValueForKey:@"windowManager"];
-    [windowManager setupX11];
+    _windowManager = [@"WindowManager" asInstance];
+    [_windowManager retain];
+    [_windowManager setupX11];
 
     unsigned long appMenuWindow = 0;
     if ([object respondsToSelector:@selector(appMenuArray)]) {
         id appMenuArray = [object appMenuArray];
         if (appMenuArray) {
-            appMenuWindow = [windowManager openAppMenuWindowsForArray:appMenuArray];
+            appMenuWindow = [_windowManager openAppMenuWindowsForArray:appMenuArray];
         }
     }
 
@@ -487,7 +487,7 @@ NSLog(@"windowManager setNilValueForKey");
     id dict = nil;
     int ANALNOFRAME = [object intValueForKey:@"ANALNOFRAME"];
     if (!ANALNOFRAME) {
-        dict = [windowManager openWindowForObject:object x:x y:y w:w h:h];
+        dict = [_windowManager openWindowForObject:object x:x y:y w:w h:h];
         int scaling = [[Definitions valueForEnvironmentVariable:@"ANAL_SCALING"] intValue];
         if (scaling >= 2) {
             [dict setValue:nsfmt(@"%d", scaling) forKey:@"pixelScaling"];
@@ -495,9 +495,9 @@ NSLog(@"windowManager setNilValueForKey");
     }
     if (dict && appMenuWindow) {
         unsigned long win = [dict unsignedLongValueForKey:@"window"];
-        [windowManager XChangeProperty:win name:"ANALAPPMENUHEAD" str:nsfmt(@"%lu", appMenuWindow)];
+        [_windowManager XChangeProperty:win name:"ANALAPPMENUHEAD" str:nsfmt(@"%lu", appMenuWindow)];
     }
-    [windowManager runLoop];
+    [_windowManager runLoop];
 }
 + (void)runWindowManagerForObject:(id)object propertyName:(char *)propertyName
 {
@@ -520,26 +520,26 @@ NSLog(@"windowManager setNilValueForKey");
 }
 + (void)runWindowManagerForObject:(id)object x:(int)x y:(int)y w:(int)w h:(int)h propertyName:(char *)propertyName
 {
-    id windowManager = [@"WindowManager" asInstance];
-    [windowManager setAsValueForKey:@"windowManager"];
-    [windowManager setupX11];
+    _windowManager = [@"WindowManager" asInstance];
+    [_windowManager retain];
+    [_windowManager setupX11];
 
     unsigned long appMenuWindow = 0;
     if ([object respondsToSelector:@selector(appMenuArray)]) {
         id appMenuArray = [object appMenuArray];
         if (appMenuArray) {
-            appMenuWindow = [windowManager openAppMenuWindowsForArray:appMenuArray];
+            appMenuWindow = [_windowManager openAppMenuWindowsForArray:appMenuArray];
         }
     }
 
-    id dict = [windowManager openWindowForObject:object x:x y:y w:w h:h overrideRedirect:NO propertyName:propertyName];
+    id dict = [_windowManager openWindowForObject:object x:x y:y w:w h:h overrideRedirect:NO propertyName:propertyName];
 
     if (dict && appMenuWindow) {
         unsigned long win = [dict unsignedLongValueForKey:@"window"];
-        [windowManager XChangeProperty:win name:"ANALAPPMENUHEAD" str:nsfmt(@"%lu", appMenuWindow)];
+        [_windowManager XChangeProperty:win name:"ANALAPPMENUHEAD" str:nsfmt(@"%lu", appMenuWindow)];
     }
         
-    [windowManager runLoop];
+    [_windowManager runLoop];
 }
 @end
 @implementation NSObject(fjdklsfjkldsjfklsdjkljf)
@@ -1353,28 +1353,24 @@ if ([monitor intValueForKey:@"height"] == 768) {
 
     return dict;
 }
-- (id)generateEventDictRootX:(int)rootX rootY:(int)rootY x:(int)x y:(int)y w:(int)w h:(int)h x11dict:(id)x11dict
+- (id)generateEventDictRootX:(int)rootX rootY:(int)rootY x:(int)x y:(int)y
 {
     id dict = nsdict();
     [dict setValue:nsfmt(@"%d", rootX) forKey:@"mouseRootX"];
     [dict setValue:nsfmt(@"%d", rootY) forKey:@"mouseRootY"];
     [dict setValue:nsfmt(@"%d", x) forKey:@"mouseX"];
     [dict setValue:nsfmt(@"%d", y) forKey:@"mouseY"];
-    [dict setValue:nsfmt(@"%d", w) forKey:@"viewWidth"];
-    [dict setValue:nsfmt(@"%d", h) forKey:@"viewHeight"];
-    [dict setValue:x11dict forKey:@"x11dict"];
-    [dict setValue:self forKey:@"windowManager"];
     return dict;
 }
-- (id)dictForButtonEvent:(void *)eptr w:(int)w h:(int)h x11dict:(id)x11dict
+- (id)dictForButtonEvent:(void *)eptr
 {
     XButtonEvent *e = eptr;
-    return [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y w:w h:h x11dict:x11dict];
+    return [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y];
 }
-- (id)dictForKeyEvent:(void *)eptr w:(int)w h:(int)h x11dict:(id)x11dict
+- (id)dictForKeyEvent:(void *)eptr
 {
     XKeyEvent *e = eptr;
-    return [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y w:w h:h x11dict:x11dict];
+    return [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y];
 }
 
 - (void)drawObjectWindow:(id)context
@@ -1430,9 +1426,6 @@ if ([monitor intValueForKey:@"height"] == 768) {
                 [Definitions drawUsingNearestFilterToOpenGLTextureID:[_openGLTexture textureID] bytes:[bitmap pixelBytes] bitmapWidth:[bitmap bitmapWidth] bitmapHeight:[bitmap bitmapHeight] bitmapStride:[bitmap bitmapStride]];
 //                [Definitions drawToOpenGLTextureID:[_openGLTexture textureID] bytes:[bitmap pixelBytes] bitmapWidth:[bitmap bitmapWidth] bitmapHeight:[bitmap bitmapHeight] bitmapStride:[bitmap bitmapStride]];
                 [Definitions drawOpenGLTextureID:[_openGLTexture textureID]];
-                if ([object respondsToSelector:@selector(drawAdditionalInRect:context:)]) {
-                    [object drawAdditionalInRect:rect context:context];
-                }
             } else if ([object respondsToSelector:@selector(drawInBitmap:rect:)]) {
                 int scaling = [context intValueForKey:@"pixelScaling"];
                 int scaledW = w;
@@ -1451,9 +1444,6 @@ if ([monitor intValueForKey:@"height"] == 768) {
                 [Definitions drawUsingNearestFilterToOpenGLTextureID:[_openGLTexture textureID] bytes:[bitmap pixelBytes] bitmapWidth:[bitmap bitmapWidth] bitmapHeight:[bitmap bitmapHeight] bitmapStride:[bitmap bitmapStride]];
 //                    [Definitions drawToOpenGLTextureID:[_openGLTexture textureID] bytes:[bitmap pixelBytes] bitmapWidth:[bitmap bitmapWidth] bitmapHeight:[bitmap bitmapHeight] bitmapStride:[bitmap bitmapStride]];
                 [Definitions drawOpenGLTextureID:[_openGLTexture textureID]];
-                if ([object respondsToSelector:@selector(drawAdditionalInRect:)]) {
-                    [object drawAdditionalInRect:rect];
-                }
             } else {
                 BOOL didDrawPixelBytes = NO;
                 if ([object respondsToSelector:@selector(pixelBytesRGBA8888)]) {
@@ -1615,8 +1605,11 @@ NSLog(@"setFocusDict:%@", dict);
         }
     }
     if ([_rootWindowObject respondsToSelector:@selector(handleDidSetInputFocusEvent:)]) {
-        id eventDict = [self generateEventDictRootX:_mouseX rootY:_mouseY x:_mouseX y:_mouseY w:_rootWindowWidth h:_rootWindowHeight x11dict:dict];
+        id eventDict = [self generateEventDictRootX:_mouseX rootY:_mouseY x:_mouseX y:_mouseY];
         [_rootWindowObject handleDidSetInputFocusEvent:eventDict];
+    } else if ([_rootWindowObject respondsToSelector:@selector(handleDidSetInputFocusEvent:context:)]) {
+        id eventDict = [self generateEventDictRootX:_mouseX rootY:_mouseY x:_mouseX y:_mouseY];
+        [_rootWindowObject handleDidSetInputFocusEvent:eventDict context:dict];
     }
 }
 
@@ -1655,7 +1648,6 @@ NSLog(@"no object windows, exiting pid %d", getpid());
                     id obj = [elt valueForKey:@"object"];
                     if ([obj respondsToSelector:@selector(handleBackgroundUpdate:)]) {
                         id dict = nsdict();
-                        [dict setValue:self forKey:@"windowManager"];
                         [dict setValue:elt forKey:@"x11dict"];
                         [obj handleBackgroundUpdate:dict];
                         [elt setValue:@"1" forKey:@"needsRedraw"];
@@ -1671,7 +1663,6 @@ NSLog(@"no object windows, exiting pid %d", getpid());
                 if ([obj respondsToSelector:@selector(beginIteration:rect:)]) {
                     Int4 r = [Definitions rectWithX:[elt intValueForKey:@"x"] y:[elt intValueForKey:@"y"] w:[elt intValueForKey:@"w"] h:[elt intValueForKey:@"h"]];
                     id dict = nsdict();
-                    [dict setValue:self forKey:@"windowManager"];
                     [dict setValue:elt forKey:@"x11dict"];
                     [obj beginIteration:dict rect:r];
                 }
@@ -1820,7 +1811,6 @@ NSLog(@"received X event type %d", event.type);
                 id obj = [elt valueForKey:@"object"];
                 if ([obj respondsToSelector:@selector(endIteration:)]) {
                     id dict = nsdict();
-                    [dict setValue:self forKey:@"windowManager"];
                     [dict setValue:elt forKey:@"x11dict"];
                     [obj endIteration:dict];
                 }
@@ -2003,9 +1993,7 @@ NSLog(@"********** buttonDownDict %@", _buttonDownDict);
             id dict = _buttonDownDict;
             id object = [dict valueForKey:@"object"];
             if ([object respondsToSelector:@selector(handleKeyDown:)]) {
-                int w = [dict intValueForKey:@"w"];
-                int h = [dict intValueForKey:@"h"];
-                id event = [self dictForKeyEvent:e w:w h:h x11dict:dict];
+                id event = [self dictForKeyEvent:e];
                 id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
                 [event setValue:keyString forKey:@"keyString"];
 NSLog(@"keyString %@", keyString);
@@ -2017,6 +2005,20 @@ NSLog(@"keyString %@", keyString);
                     [event setValue:@"1" forKey:@"windowsKey"];
                 }
                 [object handleKeyDown:event];
+                [dict setValue:@"1" forKey:@"needsRedraw"];
+            } else if ([object respondsToSelector:@selector(handleKeyDown:context:)]) {
+                id event = [self dictForKeyEvent:e];
+                id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
+                [event setValue:keyString forKey:@"keyString"];
+NSLog(@"keyString %@", keyString);
+                [event setValue:nsfmt(@"%d", keysym) forKey:@"keyCode"];
+                if (e->state & Mod1Mask) {
+                    [event setValue:@"1" forKey:@"altKey"];
+                }
+                if (e->state & Mod4Mask) {
+                    [event setValue:@"1" forKey:@"windowsKey"];
+                }
+                [object handleKeyDown:event context:dict];
                 [dict setValue:@"1" forKey:@"needsRedraw"];
             }
         }
@@ -2041,9 +2043,7 @@ NSLog(@"rootWindow keyString %@", keyString);
     id dict = [self dictForObjectWindow:e->window];
     id object = [dict valueForKey:@"object"];
     if ([object respondsToSelector:@selector(handleKeyDown:)]) {
-        int w = [dict intValueForKey:@"w"];
-        int h = [dict intValueForKey:@"h"];
-        id event = [self dictForKeyEvent:e w:w h:h x11dict:dict];
+        id event = [self dictForKeyEvent:e];
         id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
         [event setValue:keyString forKey:@"keyString"];
 NSLog(@"keyString %@", keyString);
@@ -2055,6 +2055,20 @@ NSLog(@"keyString %@", keyString);
             [event setValue:@"1" forKey:@"windowsKey"];
         }
         [object handleKeyDown:event];
+        [dict setValue:@"1" forKey:@"needsRedraw"];
+    } else if ([object respondsToSelector:@selector(handleKeyDown:context:)]) {
+        id event = [self dictForKeyEvent:e];
+        id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
+        [event setValue:keyString forKey:@"keyString"];
+NSLog(@"keyString %@", keyString);
+        [event setValue:nsfmt(@"%d", keysym) forKey:@"keyCode"];
+        if (e->state & Mod1Mask) {
+            [event setValue:@"1" forKey:@"altKey"];
+        }
+        if (e->state & Mod4Mask) {
+            [event setValue:@"1" forKey:@"windowsKey"];
+        }
+        [object handleKeyDown:event context:dict];
         [dict setValue:@"1" forKey:@"needsRedraw"];
     } else if ([object respondsToSelector:@selector(contextualMenu)]) {
         id contextualObject = object;
@@ -2101,9 +2115,7 @@ NSLog(@"handleX11KeyRelease repeat");
     id dict = [self dictForObjectWindow:e->window];
     id object = [dict valueForKey:@"object"];
     if ([object respondsToSelector:@selector(handleKeyUp:)]) {
-        int w = [dict intValueForKey:@"w"];
-        int h = [dict intValueForKey:@"h"];
-        id event = [self dictForKeyEvent:e w:w h:h x11dict:dict];
+        id event = [self dictForKeyEvent:e];
         int keysym = XLookupKeysym(e, 0);
         id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
         [event setValue:keyString forKey:@"keyString"];
@@ -2116,11 +2128,20 @@ NSLog(@"handleX11KeyRelease repeat");
         }
         [object handleKeyUp:event];
         [dict setValue:@"1" forKey:@"needsRedraw"];
-
-
-
-
-
+    } else if ([object respondsToSelector:@selector(handleKeyUp:context:)]) {
+        id event = [self dictForKeyEvent:e];
+        int keysym = XLookupKeysym(e, 0);
+        id keyString = [Definitions keyForXKeyCode:keysym modifiers:e->state];
+        [event setValue:keyString forKey:@"keyString"];
+        [event setValue:nsfmt(@"%d", keysym) forKey:@"keyCode"];
+        if (e->state & Mod1Mask) {
+            [event setValue:@"1" forKey:@"altKey"];
+        }
+        if (e->state & Mod4Mask) {
+            [event setValue:@"1" forKey:@"windowsKey"];
+        }
+        [object handleKeyUp:event context:dict];
+        [dict setValue:@"1" forKey:@"needsRedraw"];
     }
 }
 
@@ -2131,10 +2152,12 @@ NSLog(@"handleX11KeyRelease repeat");
     _mouseY = e->y_root;
     if (_isWindowManager) {
         if (!_buttonDownDict) {
-            id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root w:_rootWindowWidth h:_menuBarHeight x11dict:_menuBar];
+            id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root];
             id object = [_menuBar valueForKey:@"object"];
             if ([object respondsToSelector:@selector(handleMouseMoved:)]) {
                 [object handleMouseMoved:eventDict];
+            } else if ([object respondsToSelector:@selector(handleMouseMoved:context:)]) {
+                [object handleMouseMoved:eventDict context:_menuBar];
             }
             [_menuBar setValue:@"1" forKey:@"needsRedraw"];
         }
@@ -2146,12 +2169,15 @@ NSLog(@"handleX11KeyRelease repeat");
 NSLog(@"handleX11EnterNotify:%x", e->window);
     [self handleXCrossingEvent:eptr];
     if ([_rootWindowObject respondsToSelector:@selector(handleEnterWindowEvent:)]) {
+        id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root];
+        [_rootWindowObject handleEnterWindowEvent:eventDict];
+    } else if ([_rootWindowObject respondsToSelector:@selector(handleEnterWindowEvent:context:)]) {
         id x11dict = [self dictForObjectWindow:e->window];
         if (!x11dict) {
             x11dict = [self dictForObjectChildWindow:e->window];
         }
-        id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root w:_rootWindowWidth h:_rootWindowHeight x11dict:x11dict];
-        [_rootWindowObject handleEnterWindowEvent:eventDict];
+        id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root];
+        [_rootWindowObject handleEnterWindowEvent:eventDict context:x11dict];
     }
 }
 - (void)handleX11LeaveNotify:(void *)eptr
@@ -2175,8 +2201,11 @@ NSLog(@"FocusIn event win %lu", win);
     if (x11dict) {
         id object = [x11dict valueForKey:@"object"];
         if ([object respondsToSelector:@selector(handleFocusInEvent:)]) {
-            id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/ w:_rootWindowWidth h:_rootWindowHeight x11dict:x11dict];
+            id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/];
             [object handleFocusInEvent:eventDict];
+        } else if ([object respondsToSelector:@selector(handleFocusInEvent:context:)]) {
+            id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/];
+            [object handleFocusInEvent:eventDict context:x11dict];
         }
     }
 }
@@ -2198,8 +2227,11 @@ NSLog(@"FocusOut event win %lu", win);
     if (x11dict) {
         id object = [x11dict valueForKey:@"object"];
         if ([object respondsToSelector:@selector(handleFocusOutEvent:)]) {
-            id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/ w:_rootWindowWidth h:_rootWindowHeight x11dict:x11dict];
+            id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/];
             [object handleFocusOutEvent:eventDict];
+        } else if ([object respondsToSelector:@selector(handleFocusOutEvent:context:)]) {
+            id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/];
+            [object handleFocusOutEvent:eventDict context:x11dict];
         }
     }
 }
@@ -2442,8 +2474,11 @@ NSLog(@"handleX11DestroyNotify e->event %x e->window %x", e->event, e->window);
 NSLog(@"window destroyed %@", dict);
             id object = [dict valueForKey:@"object"];
             if ([object respondsToSelector:@selector(handleDestroyNotifyEvent:)]) {
-                id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/ w:_rootWindowWidth h:_rootWindowHeight x11dict:dict];
+                id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/];
                 [object handleDestroyNotifyEvent:eventDict];
+            } else if ([object respondsToSelector:@selector(handleDestroyNotifyEvent:context:)]) {
+                id eventDict = [self generateEventDictRootX:0 /*e->x_root*/ rootY:0 /*e->y_root*/ x:0 /*e->x_root*/ y:0 /*e->y_root*/];
+                [object handleDestroyNotifyEvent:eventDict context:dict];
             }
         }
         return;
@@ -2518,32 +2553,36 @@ NSLog(@"handleX11UnmapNotify e->event %x e->window %x", e->event, e->window);
             id dict = _buttonDownDict;
             id object = [dict valueForKey:@"object"];
 NSLog(@"handleX11ButtonPress e->button 4 object %@", object);
-            int x = [dict intValueForKey:@"x"];
-            int y = [dict intValueForKey:@"y"];
-            int w = [dict intValueForKey:@"w"];
-            int h = [dict intValueForKey:@"h"];
             if ([object respondsToSelector:@selector(handleScrollWheel:)]) {
-                id event = [self dictForButtonEvent:e w:w h:h x11dict:dict];
-                [Definitions x11FixupEvent:event forBitmapObject:object];
+                id event = [self dictForButtonEvent:e];
+                [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
                 [event setValue:@"20" forKey:@"deltaY"];
                 [event setValue:@"-20" forKey:@"scrollingDeltaY"];
                 [object handleScrollWheel:event];
+            } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+                id event = [self dictForButtonEvent:e];
+                [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
+                [event setValue:@"20" forKey:@"deltaY"];
+                [event setValue:@"-20" forKey:@"scrollingDeltaY"];
+                [object handleScrollWheel:event context:dict];
             }
             [dict setValue:@"1" forKey:@"needsRedraw"];
         } else if (e->button == 5) {
             id dict = _buttonDownDict;
             id object = [dict valueForKey:@"object"];
 NSLog(@"handleX11ButtonPress e->button 5 object %@", object);
-            int x = [dict intValueForKey:@"x"];
-            int y = [dict intValueForKey:@"y"];
-            int w = [dict intValueForKey:@"w"];
-            int h = [dict intValueForKey:@"h"];
             if ([object respondsToSelector:@selector(handleScrollWheel:)]) {
-                id event = [self dictForButtonEvent:e w:w h:h x11dict:dict];
-                [Definitions x11FixupEvent:event forBitmapObject:object];
+                id event = [self dictForButtonEvent:e];
+                [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
                 [event setValue:@"-20" forKey:@"deltaY"];
                 [event setValue:@"20" forKey:@"scrollingDeltaY"];
                 [object handleScrollWheel:event];
+            } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+                id event = [self dictForButtonEvent:e];
+                [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
+                [event setValue:@"-20" forKey:@"deltaY"];
+                [event setValue:@"20" forKey:@"scrollingDeltaY"];
+                [object handleScrollWheel:event context:dict];
             }
             [dict setValue:@"1" forKey:@"needsRedraw"];
         } else {
@@ -2556,17 +2595,19 @@ NSLog(@"handleX11ButtonPress:%x", e->window);
     if (e->window == _rootWindow) {
         id object = _rootWindowObject;
 NSLog(@"rootWindow object %@", _rootWindowObject);
-        int w = _rootWindowWidth;
-        int h = _rootWindowHeight;
-        id eventDict = [self dictForButtonEvent:e w:w h:h x11dict:nil];
+        id eventDict = [self dictForButtonEvent:e];
         [eventDict setValue:nsfmt(@"%d", e->button) forKey:@"buttonDownWhich"];
         if (e->button == 1) {
             if ([object respondsToSelector:@selector(handleMouseDown:)]) {
                 [object handleMouseDown:eventDict];
+            } else if ([object respondsToSelector:@selector(handleMouseDown:context:)]) {
+                [object handleMouseDown:eventDict context:nil];
             }
         } else if (e->button == 3) {
             if ([object respondsToSelector:@selector(handleRightMouseDown:)]) {
                 [object handleRightMouseDown:eventDict];
+            } else if ([object respondsToSelector:@selector(handleRightMouseDown:context:)]) {
+                [object handleRightMouseDown:eventDict context:nil];
             }
         }
         return;
@@ -2580,11 +2621,9 @@ NSLog(@"rootWindow object %@", _rootWindowObject);
 
 
             id object = [dict valueForKey:@"object"];
-            int w = [dict intValueForKey:@"w"];
-            int h = [dict intValueForKey:@"h"];
-            id eventDict = [self dictForButtonEvent:e w:w h:h x11dict:dict];
+            id eventDict = [self dictForButtonEvent:e];
 
-            [Definitions x11FixupEvent:eventDict forBitmapObject:object];
+            [Definitions x11FixupEvent:eventDict forBitmapObject:object x11dict:dict];
             [Definitions x11FixupEventForPixelScaling:eventDict x11dict:dict];
 
             if (e->button == 1) {
@@ -2601,12 +2640,25 @@ NSLog(@"rootWindow object %@", _rootWindowObject);
                         [eventDict setValue:@"1" forKey:@"windowsKey"];
                     }
                     [object handleMouseDown:eventDict];
+                } else if ([object respondsToSelector:@selector(handleMouseDown:context:)]) {
+                    if (e->state & ShiftMask) {
+                        [eventDict setValue:@"1" forKey:@"shiftKey"];
+                    }
+                    if (e->state & Mod1Mask) {
+                        [eventDict setValue:@"1" forKey:@"altKey"];
+                    }
+                    if (e->state & Mod4Mask) {
+                        [eventDict setValue:@"1" forKey:@"windowsKey"];
+                    }
+                    [object handleMouseDown:eventDict context:dict];
                 }
             } else if (e->button == 3) {
                 [self setValue:dict forKey:@"buttonDownDict"];
                 _buttonDownWhich = e->button;
                 if ([object respondsToSelector:@selector(handleRightMouseDown:)]) {
                     [object handleRightMouseDown:eventDict];
+                } else if ([object respondsToSelector:@selector(handleRightMouseDown:context:)]) {
+                    [object handleRightMouseDown:eventDict context:dict];
                 } else if ([object respondsToSelector:@selector(contextualMenu)]) {
                     id menu = [object contextualMenu];
                     if ([menu isArray]) {
@@ -2623,24 +2675,40 @@ NSLog(@"rootWindow object %@", _rootWindowObject);
                     [eventDict setValue:@"20" forKey:@"deltaY"];
                     [eventDict setValue:@"-20" forKey:@"scrollingDeltaY"];
                     [object handleScrollWheel:eventDict];
+                } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+                    [eventDict setValue:@"20" forKey:@"deltaY"];
+                    [eventDict setValue:@"-20" forKey:@"scrollingDeltaY"];
+                    [object handleScrollWheel:eventDict context:dict];
                 }
             } else if (e->button == 5) {
                 if ([object respondsToSelector:@selector(handleScrollWheel:)]) {
                     [eventDict setValue:@"-20" forKey:@"deltaY"];
                     [eventDict setValue:@"20" forKey:@"scrollingDeltaY"];
                     [object handleScrollWheel:eventDict];
+                } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+                    [eventDict setValue:@"-20" forKey:@"deltaY"];
+                    [eventDict setValue:@"20" forKey:@"scrollingDeltaY"];
+                    [object handleScrollWheel:eventDict context:dict];
                 }
             } else if (e->button == 6) {
                 if ([object respondsToSelector:@selector(handleScrollWheel:)]) {
                     [eventDict setValue:@"-100" forKey:@"deltaX"];
                     [eventDict setValue:@"-100" forKey:@"scrollingDeltaX"];
                     [object handleScrollWheel:eventDict];
+                } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+                    [eventDict setValue:@"-100" forKey:@"deltaX"];
+                    [eventDict setValue:@"-100" forKey:@"scrollingDeltaX"];
+                    [object handleScrollWheel:eventDict context:dict];
                 }
             } else if (e->button == 7) {
                 if ([object respondsToSelector:@selector(handleScrollWheel:)]) {
                     [eventDict setValue:@"100" forKey:@"deltaX"];
                     [eventDict setValue:@"100" forKey:@"scrollingDeltaX"];
                     [object handleScrollWheel:eventDict];
+                } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+                    [eventDict setValue:@"100" forKey:@"deltaX"];
+                    [eventDict setValue:@"100" forKey:@"scrollingDeltaX"];
+                    [object handleScrollWheel:eventDict context:dict];
                 }
             }
             [dict setValue:@"1" forKey:@"needsRedraw"];
@@ -2697,23 +2765,29 @@ NSLog(@"ButtonRelease window %x e->button %d _buttonDownWhich %d", e->window, e-
 
     id dict = _buttonDownDict;
     id object = [dict valueForKey:@"object"];
-    int x = [dict intValueForKey:@"x"];
-    int y = [dict intValueForKey:@"y"];
-    int w = [dict intValueForKey:@"w"];
-    int h = [dict intValueForKey:@"h"];
     if (e->button == 1) {
         if ([object respondsToSelector:@selector(handleMouseUp:)]) {
-            id event = [self dictForButtonEvent:e w:w h:h x11dict:dict];
-            [Definitions x11FixupEvent:event forBitmapObject:object];
+            id event = [self dictForButtonEvent:e];
+            [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
             [Definitions x11FixupEventForPixelScaling:event x11dict:dict];
             [object handleMouseUp:event];
+        } else if ([object respondsToSelector:@selector(handleMouseUp:context:)]) {
+            id event = [self dictForButtonEvent:e];
+            [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
+            [Definitions x11FixupEventForPixelScaling:event x11dict:dict];
+            [object handleMouseUp:event context:dict];
         }
     } else if (e->button == 3) {
         if ([object respondsToSelector:@selector(handleRightMouseUp:)]) {
-            id event = [self dictForButtonEvent:e w:w h:h x11dict:dict];
-            [Definitions x11FixupEvent:event forBitmapObject:object];
+            id event = [self dictForButtonEvent:e];
+            [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
             [Definitions x11FixupEventForPixelScaling:event x11dict:dict];
             [object handleRightMouseUp:event];
+        } else if ([object respondsToSelector:@selector(handleRightMouseUp:context:)]) {
+            id event = [self dictForButtonEvent:e];
+            [Definitions x11FixupEvent:event forBitmapObject:object x11dict:dict];
+            [Definitions x11FixupEventForPixelScaling:event x11dict:dict];
+            [object handleRightMouseUp:event context:dict];
         }
     }
     [dict setValue:@"1" forKey:@"needsRedraw"];
@@ -2738,8 +2812,11 @@ NSLog(@"ButtonRelease window %x e->button %d _buttonDownWhich %d", e->window, e-
             x11dict = _buttonDownDict;
         } else if (e->window == _rootWindow) {
             if ([_rootWindowObject respondsToSelector:@selector(handleMouseMoved:)]) {
-                id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root w:_rootWindowWidth h:_rootWindowHeight x11dict:nil];
+                id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root];
                 [_rootWindowObject handleMouseMoved:eventDict];
+            } else if ([_rootWindowObject respondsToSelector:@selector(handleMouseMoved:context:)]) {
+                id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root y:e->y_root];
+                [_rootWindowObject handleMouseMoved:eventDict context:nil];
             }
         } else {
             x11dict = [self dictForObjectWindow:e->window];
@@ -2750,11 +2827,15 @@ NSLog(@"ButtonRelease window %x e->button %d _buttonDownWhich %d", e->window, e-
             if ([object respondsToSelector:@selector(handleMouseMoved:)]) {
                 int x = [x11dict intValueForKey:@"x"];
                 int y = [x11dict intValueForKey:@"y"];
-                int w = [x11dict intValueForKey:@"w"];
-                int h = [x11dict intValueForKey:@"h"];
-                id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root-x y:e->y_root-y w:w h:h x11dict:x11dict];
-                [Definitions x11FixupEvent:eventDict forBitmapObject:object];
+                id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root-x y:e->y_root-y];
+                [Definitions x11FixupEvent:eventDict forBitmapObject:object x11dict:x11dict];
                 [object handleMouseMoved:eventDict];
+            } else if ([object respondsToSelector:@selector(handleMouseMoved:context:)]) {
+                int x = [x11dict intValueForKey:@"x"];
+                int y = [x11dict intValueForKey:@"y"];
+                id eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root-x y:e->y_root-y];
+                [Definitions x11FixupEvent:eventDict forBitmapObject:object x11dict:x11dict];
+                [object handleMouseMoved:eventDict context:x11dict];
             }
             [x11dict setValue:@"1" forKey:@"needsRedraw"];
         }
@@ -2769,18 +2850,26 @@ NSLog(@"ButtonRelease window %x e->button %d _buttonDownWhich %d", e->window, e-
             id object = [x11dict valueForKey:@"object"];
             int x = [x11dict intValueForKey:@"x"];
             int y = [x11dict intValueForKey:@"y"];
-            int w = [x11dict intValueForKey:@"w"];
-            int h = [x11dict intValueForKey:@"h"];
             if ([object respondsToSelector:@selector(handleMouseMoved:)]) {
                 id eventDict = nil;
                 if (_menuDict) {
-                    eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root-x y:e->y_root-y w:w h:h x11dict:x11dict];
+                    eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root-x y:e->y_root-y];
                 } else {
-                    eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y w:w h:h x11dict:x11dict];
+                    eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y];
                 }
-                [Definitions x11FixupEvent:eventDict forBitmapObject:object];
+                [Definitions x11FixupEvent:eventDict forBitmapObject:object x11dict:x11dict];
                 [Definitions x11FixupEventForPixelScaling:eventDict x11dict:x11dict];
                 [object handleMouseMoved:eventDict];
+            } else if ([object respondsToSelector:@selector(handleMouseMoved:context:)]) {
+                id eventDict = nil;
+                if (_menuDict) {
+                    eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x_root-x y:e->y_root-y];
+                } else {
+                    eventDict = [self generateEventDictRootX:e->x_root rootY:e->y_root x:e->x y:e->y];
+                }
+                [Definitions x11FixupEvent:eventDict forBitmapObject:object x11dict:x11dict];
+                [Definitions x11FixupEventForPixelScaling:eventDict x11dict:x11dict];
+                [object handleMouseMoved:eventDict context:x11dict];
             }
             [x11dict setValue:@"1" forKey:@"needsRedraw"];
         }
@@ -3149,15 +3238,13 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
     int bottomBorder = [object intValueForKey:@"bottomBorder"];
     int w = [dict intValueForKey:@"w"]-leftBorder-rightBorder;
     int h = [dict intValueForKey:@"h"]-topBorder-bottomBorder;
-    id windowManager = [@"windowManager" valueForKey];
-    [windowManager XMoveResizeWindow:childWindow :leftBorder-1 :topBorder :w :h];
-    [windowManager XMoveResizeWindow:childWindow :leftBorder :topBorder :w :h];
+    [_windowManager XMoveResizeWindow:childWindow :leftBorder-1 :topBorder :w :h];
+    [_windowManager XMoveResizeWindow:childWindow :leftBorder :topBorder :w :h];
 }
 - (void)x11MoveToMonitor:(int)monitorNumber
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
@@ -3168,7 +3255,7 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
     if (!monitor) {
         return;
     }
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int monitorX = [monitor intValueForKey:@"x"];
     int monitorWidth = [monitor intValueForKey:@"width"];
     int monitorHeight = [monitor intValueForKey:@"height"];
@@ -3182,16 +3269,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeTopHalf
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3212,16 +3298,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeBottomHalf
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3242,16 +3327,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeLeftHalf
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3272,16 +3356,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeRightHalf
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3302,16 +3385,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeTopLeft
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3332,16 +3414,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeTopRight
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3362,16 +3443,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeBottomLeft
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3392,16 +3472,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MaximizeBottomRight
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    id menuBar = [windowManager valueForKey:@"menuBar"];
+    id menuBar = [_windowManager valueForKey:@"menuBar"];
     if (dict == menuBar) {
         [@"Which window should I move?" showAlert];
         return;
     }
 
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     id monitor = [Definitions monitorForX:oldX y:oldY];
@@ -3422,9 +3501,8 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11FillToHeightOfMonitor
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     int oldX = [dict intValueForKey:@"x"];
     int oldY = [dict intValueForKey:@"y"];
     int oldW = [dict intValueForKey:@"w"];
@@ -3444,33 +3522,29 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 - (void)x11MoveWindowToX:(int)newX y:(int)newY
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
     [dict setValue:nsfmt(@"%d %d", newX, newY) forKey:@"moveWindow"];
 }
 - (void)x11ResizeWindowToWidth:(int)newW height:(int)newH
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
     [dict setValue:nsfmt(@"%d %d", newW, newH) forKey:@"resizeWindow"];
 }
 - (void)x11ChangeWindowWidthTo:(int)newW
 {
     id dict = self;
-    id windowManager = [@"windowManager" valueForKey];
     int oldH = [dict intValueForKey:@"h"];
     [dict setValue:nsfmt(@"%d %d", newW, oldH) forKey:@"resizeWindow"];
 }
 - (void)x11CloseWindow
 {
     id x11dict = self;
-    id windowManager = [@"windowManager" valueForKey];
     id childWindow = [x11dict valueForKey:@"childWindow"];
     if (childWindow) {
         int didSendCloseEvent = [x11dict intValueForKey:@"didSendCloseEvent"];
         if (didSendCloseEvent) {
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         } else {
-            [windowManager sendCloseEventToWindow:[childWindow unsignedLongValue]];
+            [_windowManager sendCloseEventToWindow:[childWindow unsignedLongValue]];
             [x11dict setValue:@"1" forKey:@"didSendCloseEvent"];
         }
     } else {
@@ -3479,17 +3553,15 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 }
 - (void)x11LowerWindow
 {
-    id windowManager = [@"windowManager" valueForKey];
-    [windowManager lowerObjectWindow:self];
+    [_windowManager lowerObjectWindow:self];
 }
 - (void)x11ToggleMaximizeWindow
 {
     id dict = self;
     unsigned long win = [dict unsignedLongValueForKey:@"window"];
-    id windowManager = [@"windowManager" valueForKey];
-    int rootWindowWidth = [windowManager intValueForKey:@"rootWindowWidth"];
-    int rootWindowHeight = [windowManager intValueForKey:@"rootWindowHeight"];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int rootWindowWidth = [_windowManager intValueForKey:@"rootWindowWidth"];
+    int rootWindowHeight = [_windowManager intValueForKey:@"rootWindowHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
     if ([dict valueForKey:@"revertMaximize"]) {
         id revert = [dict valueForKey:@"revertMaximize"];
         id tokens = [revert split:@" "];
@@ -3503,7 +3575,7 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
     } else {
         int midX = [dict intValueForKey:@"x"] + [dict intValueForKey:@"w"]/2;
         int midY = [dict intValueForKey:@"y"] + [dict intValueForKey:@"h"]/2;
-        id attrs = [windowManager XGetWindowAttributes:win];
+        id attrs = [_windowManager XGetWindowAttributes:win];
         [dict setValue:attrs forKey:@"revertMaximize"];
         id monitor = [Definitions monitorForX:midX y:midY];
         int monitorX = [monitor intValueForKey:@"x"];
@@ -3525,8 +3597,7 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 {
     id dict = self;
     unsigned long win = [dict unsignedLongValueForKey:@"window"];
-    id windowManager = [@"windowManager" valueForKey];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
 
     int midX = [dict intValueForKey:@"x"] + [dict intValueForKey:@"w"]/2;
     int midY = [dict intValueForKey:@"y"] + [dict intValueForKey:@"h"]/2;
@@ -3554,8 +3625,7 @@ NSLog(@"property %s prop_return '%s'", propertyName, prop_return);
 {
     id dict = self;
     unsigned long win = [dict unsignedLongValueForKey:@"window"];
-    id windowManager = [@"windowManager" valueForKey];
-    int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
+    int menuBarHeight = [_windowManager intValueForKey:@"menuBarHeight"];
 
     id monitors = [Definitions monitorConfig];
     id monitor = [monitors nth:monitorIndex];
