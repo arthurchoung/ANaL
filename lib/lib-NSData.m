@@ -25,6 +25,21 @@
 
 #import "ANAL.h"
 
+@implementation Definitions(emfklwmfklsdmklfmklsdfmsdkl)
++ (id)dataWithCapacity:(int)length
+{
+    return [[[NSData alloc] initWithCapacity:length] autorelease];
+}
++ (id)dataWithBytes:(char *)bytes length:(int)length
+{
+    return [[[NSData alloc] initWithBytes:bytes length:length] autorelease];
+}
++ (id)dataWithBytesNoCopy:(char *)bytes length:(int)length
+{
+    return [[[NSData alloc] initWithBytesNoCopy:bytes length:length] autorelease];
+}
+@end
+
 @implementation NSData(fiewojfidsojfkdsjfkdsj)
 - (id)blocksFromData
 {
