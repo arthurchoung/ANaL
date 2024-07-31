@@ -1,8 +1,10 @@
 #!/usr/bin/perl
 
-$baseDir = `anal configDir`;
-chomp $baseDir;
-chdir $baseDir;
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
+}
 
 system('cat Temp/monitors.txt | anal-monitor-generateScriptFromFile.pl | sh');
 if (not -d 'Temp') {
