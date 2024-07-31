@@ -36,7 +36,7 @@
 @implementation Definitions(jfkdlsjklfjsdklfljksdf)
 + (id)dataFromStandardInput
 {
-    id data = [NSData data];
+    id data = nsdata();
     for(;;) {
         char buf[4096];
         int n = read(0, buf, 4096);
