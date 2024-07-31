@@ -212,7 +212,7 @@ static unsigned char *separatorPixels =
 @implementation Definitions(fmeklwfmklsdmlfksdfm)
 + (id)testAmigaGuide
 {
-    id path = [Definitions configDir:@"Help/test.guide"];
+    id path = [Definitions analDir:@"Help/test.guide"];
     return [Definitions AmigaGuide:path];
 }
 + (id)AmigaGuide:(id)path
@@ -224,7 +224,7 @@ static unsigned char *separatorPixels =
 }
 + (id)AmigaGuide
 {
-    id path = [Definitions configDir:@"Help/anal.guide"];
+    id path = [Definitions analDir:@"Help/anal.guide"];
     return [Definitions AmigaGuide:path];
 }
 @end

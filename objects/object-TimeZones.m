@@ -283,11 +283,11 @@ static unsigned char *button_bottom_right_squared =
     }
     if (_region) {
         id tz = [elt valueForKey:@"TZ"];
-        id path = [Definitions configDir:@"Prefs/timezone.txt"];
+        id path = [Definitions analDir:@"Prefs/timezone.txt"];
         [tz writeToFile:path];
         id cmd = nsarr();
         [cmd addObject:@"touch"];
-        [cmd addObject:[Definitions configDir:@"Menu/menuBar.csv"]];
+        [cmd addObject:[Definitions analDir:@"Menu/menuBar.csv"]];
         [cmd runCommandAndReturnOutput];
         exit(0);
     } else {

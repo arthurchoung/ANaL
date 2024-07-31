@@ -41,12 +41,12 @@
 }
 - (void)handleMouseDown:(id)event
 {
-    id path = [Definitions configDir:@"Menu/rootWindowMenu.csv"];
+    id path = [Definitions analDir:@"Menu/rootWindowMenu.csv"];
     [self showRootWindowMenu:event path:path];
 }
 - (void)handleRightMouseDown:(id)event
 {
-    id path = [Definitions configDir:@"Menu/rightButtonRootWindowMenu.csv"];
+    id path = [Definitions analDir:@"Menu/rightButtonRootWindowMenu.csv"];
     [self showRootWindowMenu:event path:path];
 }
 - (void)showRootWindowMenu:(id)event path:(id)path
