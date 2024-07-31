@@ -29,23 +29,23 @@
 @implementation Definitions(fjkdlsjfklsdjklfjsdf)
 + (id)currentMonitor
 {
-    int x = [[@"windowManager" valueForKey] intValueForKey:@"mouseX"];
+    int x = [[Definitions windowManager] intValueForKey:@"mouseX"];
     return [Definitions monitorForX:x y:0];
 }
 + (id)currentMonitorName
 {
-    int x = [[@"windowManager" valueForKey] intValueForKey:@"mouseX"];
+    int x = [[Definitions windowManager] intValueForKey:@"mouseX"];
     id result = [Definitions monitorForX:x y:0];
     return [result valueForKey:@"output"];
 }
 + (int)currentMonitorIndex
 {
-    int x = [[@"windowManager" valueForKey] intValueForKey:@"mouseX"];
+    int x = [[Definitions windowManager] intValueForKey:@"mouseX"];
     return [Definitions monitorIndexForX:x y:0];
 }
 + (id)currentMonitorIndexName
 {
-    int x = [[@"windowManager" valueForKey] intValueForKey:@"mouseX"];
+    int x = [[Definitions windowManager] intValueForKey:@"mouseX"];
     id result = [Definitions monitorIndexNameForX:x y:0];
     return result;
 }
