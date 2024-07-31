@@ -67,7 +67,7 @@ NSLog(@"unable to set signal handler for SIGPIPE");
 
     id pool = [[NSAutoreleasePool alloc] init];
 
-        id execDir = [Definitions execDir];
+        id analDir = [Definitions analDir];
 
         /* If argv[0] contains a slash, then add the directory that the
            executable resides in to the PATH */
@@ -75,16 +75,16 @@ NSLog(@"unable to set signal handler for SIGPIPE");
             char *pathcstr = getenv("PATH");
             id path = nil;
             if (pathcstr && strlen(pathcstr)) {
-                path = nsfmt(@"%@:%s", execDir, pathcstr);
+                path = nsfmt(@"%@:%s", analDir, pathcstr);
             } else {
-                path = execDir;
+                path = analDir;
             }
             if (setenv("PATH", [path UTF8String], 1) != 0) {
 NSLog(@"Unable to set PATH");
             }
         }
 
-        if (setenv("SUDO_ASKPASS", [[Definitions execDir:@"anal-getPassword.pl"] UTF8String], 1) != 0) {
+        if (setenv("SUDO_ASKPASS", [[Definitions analDir:@"anal-getPassword.pl"] UTF8String], 1) != 0) {
 NSLog(@"Unable to setenv SUDO_ASKPASS");
         }
 

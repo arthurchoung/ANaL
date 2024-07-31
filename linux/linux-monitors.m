@@ -108,7 +108,7 @@
     static long lastTimestampPlusSize= 0;
     static id lastMonitors = nil;
     
-    id path = [Definitions configDir:@"Temp/listMonitors.txt"];    
+    id path = [Definitions analDir:@"Temp/listMonitors.txt"];    
     if ([path fileExists]) {
         long timestampPlusSize = [path fileTimestampPlusSize];
         if (timestampPlusSize == lastTimestampPlusSize) {

@@ -110,7 +110,7 @@ exit(0);
 @implementation Definitions(fjdkslfjklsdf)
 + (void)testFilePointer
 {
-    id path = [Definitions execDir:@"anal-xterm.sh"];
+    id path = [Definitions analDir:@"anal-xterm.sh"];
     id fp = [@"FilePointer" asInstance];
     if ([fp openFile:path mode:@"r"]) {
         for(;;) {

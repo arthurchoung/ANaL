@@ -42,9 +42,9 @@
 @implementation NSString(JFksdljfklsdjfkljsdkf)
 - (id)findInPath
 {
-    id execPath = [Definitions execDir:self];
-    if ([execPath fileExists]) {
-        return execPath;
+    id analPath = [Definitions analDir:self];
+    if ([analPath fileExists]) {
+        return analPath;
     }
 
     char *cstr = getenv("PATH");
