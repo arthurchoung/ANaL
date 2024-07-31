@@ -25,6 +25,8 @@
 
 #import "ANAL.h"
 
+static id _navigationStack = nil;
+
 static char *cStringForBitmapBackButtonLeft =
 "     b\n"
 "    bb\n"
@@ -174,26 +176,6 @@ static void drawBackButtonInBitmap_rect_palette_(id bitmap, Int4 r, char *palett
 
     [Definitions drawInBitmap:bitmap left:left middle:middle right:right centeredInRect:r palette:palette];
 }
-static void fixupEvent_forBitmapObject_(id event, id obj)
-{
-    if ([obj respondsToSelector:@selector(bitmapWidth)]) {
-        if ([obj respondsToSelector:@selector(bitmapHeight)]) {
-            int navigationBarHeight = [Definitions navigationBarHeight];
-            int bitmapWidth = [obj bitmapWidth]; 
-            int bitmapHeight = [obj bitmapHeight];
-            int viewWidth = [event intValueForKey:@"viewWidth"];
-            int viewHeight = [event intValueForKey:@"viewHeight"];
-            int mouseX = [event intValueForKey:@"mouseX"];
-            int mouseY = [event intValueForKey:@"mouseY"] - navigationBarHeight;
-            int adjustedX = (double)mouseX / ((double)viewWidth/(double)bitmapWidth);
-            int adjustedY = (double)mouseY / ((double)viewHeight/(double)bitmapHeight);
-            [event setValue:nsfmt(@"%d", adjustedX) forKey:@"mouseX"];
-            [event setValue:nsfmt(@"%d", adjustedY) forKey:@"mouseY"];
-            [event setValue:nsfmt(@"%d", bitmapWidth) forKey:@"viewWidth"];
-            [event setValue:nsfmt(@"%d", bitmapHeight) forKey:@"viewHeight"];
-        }
-    }
-}
 
 @implementation NSObject(Jfkldslkfjsdklfj)
 - (id)asNavigationStack
@@ -221,12 +203,11 @@ static void fixupEvent_forBitmapObject_(id event, id obj)
 
 + (id)navigationStack
 {
-    id obj = [@"navigationStack" valueForKey];
-    if (!obj) {
-        obj = [@"NavigationStack" asInstance];
-        [obj setAsValueForKey:@"navigationStack"];
+    if (!_navigationStack) {
+        _navigationStack = [@"NavigationStack" asInstance];
+        [_navigationStack retain];
     }
-    return obj;
+    return _navigationStack;
 }
 
 @end
@@ -457,12 +438,12 @@ NSLog(@"pushObject:%@ not allowed", obj);
     return nil;
 }
 
-- (void)handleBackgroundUpdate:(id)event
+- (void)handleBackgroundUpdate:(id)x11dict
 {
     id obj = [_context valueForKey:@"object"];
     if (obj) {
         if ([obj respondsToSelector:@selector(handleBackgroundUpdate:)]) {
-            [obj handleBackgroundUpdate:event];
+            [obj handleBackgroundUpdate:x11dict];
         }
     }
 }
@@ -482,10 +463,9 @@ NSLog(@"pushObject:%@ not allowed", obj);
     return NO;
 }
     
-- (void)beginIteration:(id)event rect:(Int4)r
+- (void)beginIteration:(id)x11dict rect:(Int4)r
 {
     if (_updateWindowName) {
-        id x11dict = [event valueForKey:@"x11dict"];
         [x11dict setValue:[@"." asRealPath] forKey:@"changeWindowName"];
         _updateWindowName = NO;
     }
@@ -505,22 +485,22 @@ NSLog(@"context %@", _context);
     id obj = [_context valueForKey:@"object"];
     if (obj) {
         if ([obj respondsToSelector:@selector(beginIteration:rect:)]) {
-            [obj beginIteration:event rect:r];
+            [obj beginIteration:x11dict rect:r];
         }
     }
 }
-- (void)endIteration:(id)event
+- (void)endIteration:(id)x11dict
 {
     id obj = [_context valueForKey:@"object"];
     if (obj) {
         if ([obj respondsToSelector:@selector(endIteration:)]) {
-            [obj endIteration:event];
+            [obj endIteration:x11dict];
         }
     }
 }
 
 
-- (id)buttonForMousePosEvent:(id)event
+- (id)buttonForMousePosEvent:(id)event x11dict:(id)x11dict
 {
     int mouseX = [event intValueForKey:@"mouseX"];
     int mouseY = [event intValueForKey:@"mouseY"];
@@ -532,13 +512,15 @@ NSLog(@"context %@", _context);
         return nil;
     }
 
+    int x11W = [x11dict intValueForKey:@"w"];
+
     if (mouseX < 0) {
         return nil;
-    } else if (mouseX >= [event intValueForKey:@"viewWidth"]) {
+    } else if (mouseX >= x11W) {
         return nil;
-    } else if (mouseX < [event intValueForKey:@"viewWidth"] / 4) {
+    } else if (mouseX < x11W / 4) {
         return @"backButton";
-    } else if (mouseX > [event intValueForKey:@"viewWidth"] / 4 * 3) {
+    } else if (mouseX > x11W / 4 * 3) {
         return @"forwardButton";
     } else {
         return @"header";
@@ -547,20 +529,10 @@ NSLog(@"context %@", _context);
     return nil;
 }
 
-- (void)handleMagnify:(id)event
-{
-    id obj = [_context valueForKey:@"object"];
-    if ([obj respondsToSelector:@selector(handleMagnify:)]) {
-        [obj handleMagnify:event];
-    }
-}
-
 - (void)handleKeyDown:(id)event
 {
     id obj = [_context valueForKey:@"object"];
     if ([obj respondsToSelector:@selector(handleKeyDown:)]) {
-        int navigationBarHeight = [Definitions navigationBarHeight];
-        [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         [obj handleKeyDown:event];
     }
 }
@@ -568,8 +540,6 @@ NSLog(@"context %@", _context);
 {
     id obj = [_context valueForKey:@"object"];
     if ([obj respondsToSelector:@selector(handleScrollWheel:)]) {
-        int navigationBarHeight = [Definitions navigationBarHeight];
-        [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         [obj handleScrollWheel:event];
     }
 }
@@ -581,36 +551,32 @@ NSLog(@"context %@", _context);
     if (mouseY < navigationBarHeight) {
         id message = [obj valueForKey:@"navigationRightMouseDownMessage"];
         if ([message length]) {
-            id windowManager = [event valueForKey:@"windowManager"];
             int mouseRootX = [event intValueForKey:@"mouseRootX"];
             int mouseRootY = [event intValueForKey:@"mouseRootY"];
             id result = [self evaluateMessage:message];
             if (result) {
                 [result setValue:self forKey:@"contextualObject"];
+                id windowManager = [Definitions windowManager];
                 [windowManager openButtonDownMenuForObject:result x:mouseRootX y:mouseRootY w:0 h:0];
             }
         }
     } else {
-        [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleRightMouseDown:)]) {
-            fixupEvent_forBitmapObject_(event, obj);
             [obj handleRightMouseDown:event];
         }
     }
 }
-- (void)handleMouseDown:(id)event
+- (void)handleMouseDown:(id)event context:(id)x11dict
 {
     id obj = [_context valueForKey:@"object"];
     int mouseY = [event intValueForKey:@"mouseY"];
     int navigationBarHeight = [Definitions navigationBarHeight];
     if (mouseY < navigationBarHeight) {
-        id button = [self buttonForMousePosEvent:event];
+        id button = [self buttonForMousePosEvent:event x11dict:x11dict];
         [self setValue:button forKey:@"buttonDown"];
         _buttonPassthrough = NO;
     } else {
-        [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleMouseDown:)]) {
-            fixupEvent_forBitmapObject_(event, obj);
             [obj handleMouseDown:event];
         }
         _buttonPassthrough = YES;
@@ -635,9 +601,7 @@ NSLog(@"context %@", _context);
         }
     } else {
         int navigationBarHeight = [Definitions navigationBarHeight];
-        [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - navigationBarHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleMouseUp:)]) {
-            fixupEvent_forBitmapObject_(event, obj);
             [obj handleMouseUp:event];
         }
         _buttonPassthrough = NO;
@@ -645,7 +609,7 @@ NSLog(@"context %@", _context);
 }
 
 
-- (void)handleMouseMoved:(id)event
+- (void)handleMouseMoved:(id)event context:(id)x11dict
 {
     id obj = [_context valueForKey:@"object"];
     int mouseY = [event intValueForKey:@"mouseY"];
@@ -662,12 +626,10 @@ NSLog(@"context %@", _context);
     }
     
     if (!passthrough) {
-        id button = [self buttonForMousePosEvent:event];
+        id button = [self buttonForMousePosEvent:event x11dict:x11dict];
         [self setValue:button forKey:@"buttonHover"];
     } else {
-        [event setValue:nsfmt(@"%d", [event intValueForKey:@"viewHeight"] - cellHeight) forKey:@"viewHeight"];
         if ([obj respondsToSelector:@selector(handleMouseMoved:)]) {
-            fixupEvent_forBitmapObject_(event, obj);
             [obj handleMouseMoved:event];
         }
     }
@@ -704,7 +666,7 @@ NSLog(@"context %@", _context);
             }
 #ifndef BUILD_FOR_ANDROID
             if ([obj respondsToSelector:@selector(pixelBytesRGBA8888)]) {
-                if (![[@"windowManager" valueForKey] valueForKey:@"openGLTexture"]) {
+                if (![[Definitions windowManager] valueForKey:@"openGLTexture"]) {
                     char *bytes = [obj pixelBytesRGBA8888];
                     if (bytes) {
                         int bitmapWidth = [obj bitmapWidth];
@@ -716,7 +678,7 @@ NSLog(@"context %@", _context);
             }
 
             if ([obj respondsToSelector:@selector(pixelBytesBGR565)]) {
-                if (![[@"windowManager" valueForKey] valueForKey:@"openGLTexture"]) {
+                if (![[Definitions windowManager] valueForKey:@"openGLTexture"]) {
                     char *bytes = [obj pixelBytesBGR565];
                     if (bytes) {
                         int bitmapWidth = [obj bitmapWidth];
@@ -804,16 +766,5 @@ shadowRect.y -= 1;
     [self popObject];
 }
 
-- (void)drawAdditionalInRect:(Int4)r
-{
-    id obj = [_context valueForKey:@"object"];
-    if ([obj respondsToSelector:@selector(drawAdditionalInRect:)]) {
-        int navigationBarHeight = [Definitions navigationBarHeight];
-        Int4 r1 = r;
-        r1.y += navigationBarHeight;
-        r1.h -= navigationBarHeight;
-        [obj drawAdditionalInRect:r1];
-    }
-}
 @end
 
