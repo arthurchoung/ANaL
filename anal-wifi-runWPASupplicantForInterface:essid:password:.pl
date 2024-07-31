@@ -15,9 +15,11 @@ $password =~ s/\n//g;
 $password =~ s/\\/\\\\/g;
 $password =~ s/"/\\"/g;
 
-$baseDir = `anal configDir`;
-chomp $baseDir;
-chdir $baseDir;
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
+}
 
 $configFile = "Temp/wpa_supplicant.conf";
 open FH, ">$configFile" or die('unable to write file $configFile');

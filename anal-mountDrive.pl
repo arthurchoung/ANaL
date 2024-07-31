@@ -1,12 +1,14 @@
 #!/usr/bin/perl
 
-$baseDir = `anal configDir`;
-chomp $baseDir;
-chdir $baseDir;
-
 $device = shift @ARGV;
 if (not $device) {
     die('specify device');
+}
+
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
 }
 
 for(;;) {

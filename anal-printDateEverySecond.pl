@@ -1,7 +1,12 @@
 #!/usr/bin/perl
 
-$configDir = `anal configDir`;
-$timezone = `cat "$configDir/Prefs/timezone.txt"`;
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
+}
+
+$timezone = `cat Prefs/timezone.txt`;
 chomp $timezone;
 
 $|=1;

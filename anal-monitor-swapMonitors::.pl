@@ -10,9 +10,11 @@ if ($matchName1 eq $matchName2) {
     die('matchName1 and matchName2 are the same');
 }
 
-$baseDir = `anal configDir`;
-chomp $baseDir;
-chdir $baseDir;
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
+}
 
 system("cat Temp/listMonitors.txt | anal-monitor-modifyToSwapMonitors::.pl $matchName1 $matchName2 >Temp/monitors.txt");
 

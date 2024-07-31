@@ -1,12 +1,14 @@
 #!/usr/bin/perl
 
-$baseDir = `anal configDir`;
-chomp $baseDir;
-chdir $baseDir;
-
 $interface = shift @ARGV;
 if (not $interface) {
     die('specify interface');
+}
+
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
 }
 
 system('sudo', '-A', 'ifconfig', $interface, 'up');
