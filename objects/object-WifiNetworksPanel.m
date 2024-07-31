@@ -168,7 +168,7 @@ static unsigned char *button_bottom_right_squared =
         return;
     }
     if (!_standardInputData) {
-        [self setValue:[NSData data] forKey:@"standardInputData"];
+        [self setValue:nsdata() forKey:@"standardInputData"];
     }
     char buf[4096];
     int n = read(0, buf, 4096);
