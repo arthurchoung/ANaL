@@ -37,7 +37,7 @@
     }
     [Definitions setValue:nsfmt(@"%d", scaling) forEnvironmentVariable:@"ANAL_SCALING"];
 
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     [windowManager setFocusDict:nil];
     [windowManager unparentAllWindows];
 
@@ -367,8 +367,6 @@ static char *selectedRightBorderMiddlePixels =
     char _buttonHover;
     int _buttonDownX;
     int _buttonDownY;
-    int _buttonDownW;
-    int _buttonDownH;
     Int4 _titleBarRect;
     Int4 _titleBarTextRect;
     Int4 _leftBorderRect;
@@ -686,22 +684,17 @@ static char *selectedRightBorderMiddlePixels =
     }
     return 0;
 }
-- (void)handleMouseDown:(id)event
+- (void)handleMouseDown:(id)event context:(id)x11dict
 {
-    id windowManager = [event valueForKey:@"windowManager"];
-    id x11dict = [event valueForKey:@"x11dict"];
+    id windowManager = [Definitions windowManager];
     [windowManager setFocusDict:x11dict];
     int mouseX = [event intValueForKey:@"mouseX"];
     int mouseY = [event intValueForKey:@"mouseY"];
-    int viewWidth = [event intValueForKey:@"viewWidth"];
-    int viewHeight = [event intValueForKey:@"viewHeight"];
     if ([Definitions isX:mouseX y:mouseY insideRect:_closeButtonRect]) {
         _buttonDown = 'c';
         _buttonHover = 'c';
         _buttonDownX = mouseX;
         _buttonDownY = mouseY;
-        _buttonDownW = viewWidth;
-        _buttonDownH = viewHeight;
         return;
     }
     if ([Definitions isX:mouseX y:mouseY insideRect:_maximizeButtonRect]) {
@@ -709,8 +702,6 @@ static char *selectedRightBorderMiddlePixels =
         _buttonHover = 'm';
         _buttonDownX = mouseX;
         _buttonDownY = mouseY;
-        _buttonDownW = viewWidth;
-        _buttonDownH = viewHeight;
         return;
     }
     if ([Definitions isX:mouseX y:mouseY insideRect:_lowerButtonRect]) {
@@ -718,29 +709,25 @@ static char *selectedRightBorderMiddlePixels =
         _buttonHover = 'l';
         _buttonDownX = mouseX;
         _buttonDownY = mouseY;
-        _buttonDownW = viewWidth;
-        _buttonDownH = viewHeight;
         return;
     }
-    int border = [self borderForX:mouseX y:mouseY w:viewWidth h:viewHeight];
+    int x11W = [x11dict intValueForKey:@"w"];
+    int x11H = [x11dict intValueForKey:@"h"];
+    int border = [self borderForX:mouseX y:mouseY w:x11W h:x11H];
     if (border) {
         _buttonDown = border;
         _buttonDownX = mouseX;
         _buttonDownY = mouseY;
-        _buttonDownW = viewWidth;
-        _buttonDownH = viewHeight;
         return;
     }
     if ([Definitions isX:mouseX y:mouseY insideRect:_titleBarRect]) {
         _buttonDown = 't';
         _buttonDownX = mouseX;
         _buttonDownY = mouseY;
-        _buttonDownW = viewWidth;
-        _buttonDownH = viewHeight;
         return;
     }
 }
-- (void)handleMouseMoved:(id)event
+- (void)handleMouseMoved:(id)event context:(id)x11dict
 {
     if (_buttonDown == 'c') {
         int mouseX = [event intValueForKey:@"mouseX"];
@@ -774,12 +761,10 @@ static char *selectedRightBorderMiddlePixels =
     }
 
     if (_buttonDown == 't') {
-        id windowManager = [event valueForKey:@"windowManager"];
+        id windowManager = [Definitions windowManager];
         int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
         int mouseRootX = [event intValueForKey:@"mouseRootX"];
         int mouseRootY = [event intValueForKey:@"mouseRootY"];
-
-        id dict = [event valueForKey:@"x11dict"];
 
         int newX = mouseRootX - _buttonDownX;
         int newY = mouseRootY - _buttonDownY;
@@ -791,7 +776,7 @@ static char *selectedRightBorderMiddlePixels =
             newY = menuBarHeight;
         }
 
-        [dict setValue:nsfmt(@"%d %d", newX, newY) forKey:@"moveWindow"];
+        [x11dict setValue:nsfmt(@"%d %d", newX, newY) forKey:@"moveWindow"];
 
         return;
     }
@@ -800,12 +785,11 @@ static char *selectedRightBorderMiddlePixels =
     int mouseY = [event intValueForKey:@"mouseY"];
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
-    id x11dict = [event valueForKey:@"x11dict"];
     int x = [x11dict intValueForKey:@"x"];
     int y = [x11dict intValueForKey:@"y"];
     int w = [x11dict intValueForKey:@"w"];
     int h = [x11dict intValueForKey:@"h"];
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     if (!_buttonDown) {
         int border = [self borderForX:mouseX y:mouseY w:w h:h];
         if (border) {
@@ -940,21 +924,20 @@ static char *selectedRightBorderMiddlePixels =
         return;
     }
 }
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
-    id dict = [event valueForKey:@"x11dict"];
     if ((_buttonDown == 'c') && (_buttonHover == 'c')) {
-        [dict x11CloseWindow];
+        [x11dict x11CloseWindow];
     }
     if ((_buttonDown == 'm') && (_buttonHover == 'm')) {
-        [dict x11ToggleMaximizeWindow];
+        [x11dict x11ToggleMaximizeWindow];
     }
     if ((_buttonDown == 'l') && (_buttonHover == 'l')) {
-        [dict x11LowerWindow];
+        [x11dict x11LowerWindow];
     }
     if (_buttonDown == 't') {
         /* this was added for Wine */
-        [dict x11MoveChildWindowBackAndForthForWine];
+        [x11dict x11MoveChildWindowBackAndForthForWine];
     }
 
     _buttonDown = 0;

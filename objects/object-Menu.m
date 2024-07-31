@@ -173,7 +173,7 @@
     return 1;
 }
 
-- (void)beginIteration:(id)event rect:(Int4)r
+- (void)beginIteration:(id)x11dict rect:(Int4)r
 {
 }
 
@@ -287,7 +287,7 @@ NSLog(@"dy %d", dy);
     _mouseY = [event intValueForKey:@"mouseY"];
 }
 
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
 NSLog(@"Menu handleMouseUp");
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
@@ -304,15 +304,14 @@ NSLog(@"Menu handleMouseUp");
             }
             [context  evaluateMessage:message];
             if (_contextualWindow) {
-                id windowManager = [@"windowManager" valueForKey];
+                id windowManager = [Definitions windowManager];
                 id contextualDict = [windowManager dictForObjectWindow:_contextualWindow];
                 [contextualDict setValue:@"1" forKey:@"needsRedraw"];
             }
         }
     }
-    id x11dict = [event valueForKey:@"x11dict"];
     if (_unmapInsteadOfClose) {
-        id windowManager = [@"windowManager" valueForKey];
+        id windowManager = [Definitions windowManager];
         id window = [x11dict valueForKey:@"window"];
         if (window) {
             [windowManager XUnmapWindow:[window unsignedLongValue]];
@@ -321,9 +320,9 @@ NSLog(@"Menu handleMouseUp");
         [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
     }
 }
-- (void)handleRightMouseUp:(id)event
+- (void)handleRightMouseUp:(id)event context:(id)x11dict
 {
-    [self handleMouseUp:event];
+    [self handleMouseUp:event context:x11dict];
 }
 @end
 

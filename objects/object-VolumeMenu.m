@@ -216,9 +216,8 @@ NSLog(@"alsaStatus '%@'", line);
         }
     }
 }
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
-    id x11dict = [event valueForKey:@"x11dict"];
     [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
 }
 

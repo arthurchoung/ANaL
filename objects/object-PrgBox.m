@@ -364,7 +364,7 @@ NSLog(@"handleProcessID:%d wstatus:%d", pid, wstatus);
         [self setValue:str forKey:@"exitStatus"];
     }
 }
-- (void)endIteration:(id)event
+- (void)endIteration:(id)x11dict
 {
 }
 - (void)drawInBitmap:(id)bitmap rect:(Int4)r
@@ -483,7 +483,7 @@ NSLog(@"handleProcessID:%d wstatus:%d", pid, wstatus);
         _buttonHover = 0;
     }
 }
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
     if (_buttonDown == _buttonHover) {
         if (_buttonDown == 'o') {
@@ -494,7 +494,6 @@ NSLog(@"handleProcessID:%d wstatus:%d", pid, wstatus);
                 if (_dialogMode) {
                     exit(0);
                 }
-                id x11dict = [event valueForKey:@"x11dict"];
                 [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             }
         }
@@ -509,12 +508,11 @@ NSLog(@"handleProcessID:%d wstatus:%d", pid, wstatus);
         _returnKeyDown = YES;
     }
 }
-- (void)handleKeyUp:(id)event
+- (void)handleKeyUp:(id)event context:(id)x11dict
 {
     id keyString = [event valueForKey:@"keyString"];
     if ([keyString isEqual:@"return"]) {
         if (_returnKeyDown) {
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             _returnKeyDown = NO;
         }

@@ -348,14 +348,14 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
     }
     return 288;
 }
-- (void)handleBackgroundUpdate:(id)event
+- (void)handleBackgroundUpdate:(id)x11dict
 {
     time_t timestamp = [_path fileModificationTimestamp];
     if (timestamp != _timestamp) {
         _timestamp = 0;
     }
 }
-- (void)beginIteration:(id)event rect:(Int4)r
+- (void)beginIteration:(id)x11dict rect:(Int4)r
 {
     if (!_timestamp) {
         _timestamp = [_path fileModificationTimestamp];
@@ -467,20 +467,18 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
         _buttonHover = 0;
     }
 }
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
     if (_buttonDown == _buttonHover) {
         if (_buttonDown == 'o') {
             if (_dialogMode) {
                 exit(0);
             }
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         } else if (_buttonDown == 'c') {
             if (_dialogMode) {
                 exit(1);
             }
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         }
     }
@@ -494,7 +492,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
         _returnKeyDown = YES;
     }
 }
-- (void)handleKeyUp:(id)event
+- (void)handleKeyUp:(id)event context:(id)x11dict
 {
     id str = [event valueForKey:@"keyString"];
     if ([str isEqual:@"return"]) {
@@ -502,8 +500,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
             if (_dialogMode) {
                 exit(0);
             }
-            id x11Dict = [event valueForKey:@"x11dict"];
-            [x11Dict setValue:@"1" forKey:@"shouldCloseWindow"];
+            [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             _returnKeyDown = NO;
         }
     }

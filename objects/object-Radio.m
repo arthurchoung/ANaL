@@ -573,7 +573,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
         _returnKeyDown = YES;
     }
 }
-- (void)handleKeyUp:(id)event
+- (void)handleKeyUp:(id)event context:(id)x11dict
 {
     id str = [event valueForKey:@"keyString"];
     if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
@@ -588,8 +588,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
                 }
                 exit(0);
             }
-            id x11Dict = [event valueForKey:@"x11dict"];
-            [x11Dict setValue:@"1" forKey:@"shouldCloseWindow"];
+            [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             _returnKeyDown = NO;
         }
     }

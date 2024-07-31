@@ -324,7 +324,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
 @implementation Definitions(fjkdlsjfkldsjfkldsjklfwejffjdkjfkdjlsd)
 + (void)showAlert:(id)text
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     if ([windowManager intValueForKey:@"isWindowManager"]) {
 NSLog(@"showAlert:'%@'", text);
         return;
@@ -341,7 +341,7 @@ NSLog(@"showAlert:'%@'", text);
 
 - (void)showAlert
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     if ([windowManager intValueForKey:@"isWindowManager"]) {
 NSLog(@"showAlert:'%@'", self);
         return;
@@ -428,7 +428,7 @@ NSLog(@"showAlert:'%@'", self);
     }
     return 288;
 }
-- (void)handleBackgroundUpdate:(id)event
+- (void)handleBackgroundUpdate:(id)x11dict
 {
     if (_x11WaitForFocusOutThenClose) {
         if (_didFocusOut) {
@@ -551,7 +551,7 @@ NSLog(@"showAlert:'%@'", self);
         _buttonHover = 0;
     }
 }
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
     if (_buttonDown == _buttonHover) {
         if (_buttonDown == 'o') {
@@ -559,14 +559,12 @@ NSLog(@"showAlert:'%@'", self);
                 exit(0);
             }
             NSOut(@"%@\n", _okText);
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         } else if (_buttonDown == 'c') {
             if (_dialogMode) {
                 exit(1);
             }
             NSOut(@"%@\n", _cancelText);
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         }
     }
@@ -580,7 +578,7 @@ NSLog(@"showAlert:'%@'", self);
         _returnKey = 1;
     }
 }
-- (void)handleKeyUp:(id)event
+- (void)handleKeyUp:(id)event context:(id)x11dict
 {
     id str = [event valueForKey:@"keyString"];
     if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
@@ -589,7 +587,6 @@ NSLog(@"showAlert:'%@'", self);
                 exit(0);
             }
             NSOut(@"%@\n", _okText);
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             _returnKey = 0;
         }

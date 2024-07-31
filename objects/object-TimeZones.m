@@ -195,7 +195,7 @@ static unsigned char *button_bottom_right_squared =
     }
     return nil;
 }
-- (void)handleBackgroundUpdate:(id)event
+- (void)handleBackgroundUpdate:(id)x11dict
 {
     time_t timestamp = [_currentDirectory fileModificationTimestamp];
     if (timestamp == _timestamp) {

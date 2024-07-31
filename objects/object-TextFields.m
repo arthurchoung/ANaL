@@ -455,7 +455,7 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
     return h;
 }
 
-- (void)handleBackgroundUpdate:(id)event
+- (void)handleBackgroundUpdate:(id)x11dict
 {
     _cursorBlink--;
     if (_cursorBlink < 0) {
@@ -659,7 +659,7 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
         }
     }
 }
-- (void)handleKeyUp:(id)event
+- (void)handleKeyUp:(id)event context:(id)x11dict
 {
     id str = [event valueForKey:@"keyString"];
     if ([str isEqual:@"return"] || [str isEqual:@"shift-return"] || [str isEqual:@"keypadenter"]) {
@@ -667,8 +667,7 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
             if (_dialogMode) {
                 [self exitWithDialogMode];
             }
-            id x11Dict = [event valueForKey:@"x11dict"];
-            [x11Dict setValue:@"1" forKey:@"shouldCloseWindow"];
+            [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
             _returnKeyDown = NO;
         }
     }
@@ -700,20 +699,18 @@ static void drawTextFieldInBitmap_rect_(id bitmap, Int4 r)
         _buttonHover = 0;
     }
 }
-- (void)handleMouseUp:(id)event
+- (void)handleMouseUp:(id)event context:(id)x11dict
 {
     if (_buttonDown == _buttonHover) {
         if (_buttonDown == 'o') {
             if (_dialogMode) {
                 [self exitWithDialogMode];
             }
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         } else if (_buttonDown == 'c') {
             if (_dialogMode) {
                 exit(1);
             }
-            id x11dict = [event valueForKey:@"x11dict"];
             [x11dict setValue:@"1" forKey:@"shouldCloseWindow"];
         }
     }

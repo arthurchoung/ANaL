@@ -232,7 +232,7 @@ static int monthNameAsInt(id str)
     }
     return nil;
 }
-- (void)handleBackgroundUpdate:(id)event
+- (void)handleBackgroundUpdate:(id)x11dict
 {
     if (_disableEvents) {
         return;

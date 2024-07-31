@@ -35,7 +35,7 @@
 }
 - (void)handleMouseMoved:(id)event
 {
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     id menuBar = [windowManager valueForKey:@"menuBar"];
     [menuBar setValue:@"1" forKey:@"needsRedraw"];
 }
@@ -44,7 +44,7 @@
 }
 - (void)handleRightMouseDown:(id)event
 {
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
     id buttonDownWhich = [event valueForKey:@"buttonDownWhich"];

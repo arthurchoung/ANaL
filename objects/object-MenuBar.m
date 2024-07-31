@@ -115,7 +115,7 @@
 {
     id arr = [self readMenuBarFromFile:_configPath];
     if (arr) {
-        id windowManager = [@"windowManager" valueForKey];
+        id windowManager = [Definitions windowManager];
         if (windowManager) {
             arr = [windowManager incorporateFocusAppMenu:arr];
         }
@@ -136,7 +136,7 @@ NSLog(@"DEALLOC MenuBar");
     }
     return NO;
 }
-- (void)beginIteration:(id)event rect:(Int4)r
+- (void)beginIteration:(id)x11dict rect:(Int4)r
 {
     if (_flashIteration > 0) {
         _flashIteration--;
@@ -195,21 +195,31 @@ NSLog(@"DEALLOC MenuBar");
     }
 
     if (_menuDict) {
-        id windowManager = [event valueForKey:@"windowManager"];
+        id windowManager = [Definitions windowManager];
         id object = [_menuDict valueForKey:@"object"];
         if ([object respondsToSelector:@selector(handleScrollWheel:)]) {
             int mouseRootX = [event intValueForKey:@"mouseRootX"];
             int mouseRootY = [event intValueForKey:@"mouseRootY"];
             int x = [_menuDict intValueForKey:@"x"];
             int y = [_menuDict intValueForKey:@"y"];
-            int w = [_menuDict intValueForKey:@"w"];
-            int h = [_menuDict intValueForKey:@"h"];
-            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y w:w h:h x11dict:_menuDict];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
             [newEvent setValue:[event valueForKey:@"deltaX"] forKey:@"deltaX"];
             [newEvent setValue:[event valueForKey:@"deltaY"] forKey:@"deltaY"];
             [newEvent setValue:[event valueForKey:@"scrollingDeltaX"] forKey:@"scrollingDeltaX"];
             [newEvent setValue:[event valueForKey:@"scrollingDeltaY"] forKey:@"scrollingDeltaY"];
             [object handleScrollWheel:newEvent];
+            [_menuDict setValue:@"1" forKey:@"needsRedraw"];
+        } else if ([object respondsToSelector:@selector(handleScrollWheel:context:)]) {
+            int mouseRootX = [event intValueForKey:@"mouseRootX"];
+            int mouseRootY = [event intValueForKey:@"mouseRootY"];
+            int x = [_menuDict intValueForKey:@"x"];
+            int y = [_menuDict intValueForKey:@"y"];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
+            [newEvent setValue:[event valueForKey:@"deltaX"] forKey:@"deltaX"];
+            [newEvent setValue:[event valueForKey:@"deltaY"] forKey:@"deltaY"];
+            [newEvent setValue:[event valueForKey:@"scrollingDeltaX"] forKey:@"scrollingDeltaX"];
+            [newEvent setValue:[event valueForKey:@"scrollingDeltaY"] forKey:@"scrollingDeltaY"];
+            [object handleScrollWheel:newEvent context:_menuDict];
             [_menuDict setValue:@"1" forKey:@"needsRedraw"];
         }
     }
@@ -221,7 +231,7 @@ NSLog(@"DEALLOC MenuBar");
     }
 
     if (_menuDict) {
-        id windowManager = [event valueForKey:@"windowManager"];
+        id windowManager = [Definitions windowManager];
         id object = [_menuDict valueForKey:@"object"];
         if ([object respondsToSelector:@selector(handleKeyDown:)]) {
             [object handleKeyDown:event];
@@ -238,7 +248,7 @@ NSLog(@"handleMouseDown ignore");
     }
 NSLog(@"handleMouseDown");
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
     if (mouseRootY >= menuBarHeight) {
@@ -255,7 +265,7 @@ NSLog(@"handleRightMouseDown");
         return;
     }
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     int menuBarHeight = [windowManager intValueForKey:@"menuBarHeight"];
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
     if (mouseRootY >= menuBarHeight) {
@@ -289,7 +299,7 @@ NSLog(@"MenuBar handleMouseUp event %@", event);
         return;
     }
 
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
 
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
@@ -299,10 +309,14 @@ NSLog(@"MenuBar handleMouseUp event %@", event);
         if ([object respondsToSelector:@selector(handleMouseUp:)]) {
             int x = [_menuDict intValueForKey:@"x"];
             int y = [_menuDict intValueForKey:@"y"];
-            int w = [_menuDict intValueForKey:@"w"];
-            int h = [_menuDict intValueForKey:@"h"];
-            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y w:w h:h x11dict:_menuDict];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
             [object handleMouseUp:newEvent];
+            [_menuDict setValue:@"1" forKey:@"needsRedraw"];
+        } else if ([object respondsToSelector:@selector(handleMouseUp:context:)]) {
+            int x = [_menuDict intValueForKey:@"x"];
+            int y = [_menuDict intValueForKey:@"y"];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
+            [object handleMouseUp:newEvent context:_menuDict];
             [_menuDict setValue:@"1" forKey:@"needsRedraw"];
         }
         [self setValue:nil forKey:@"menuDict"];
@@ -330,17 +344,23 @@ NSLog(@"MenuBar handleRightMouseUp event %@", event);
     }
 
     if (_menuDict) {
-        id windowManager = [event valueForKey:@"windowManager"];
+        id windowManager = [Definitions windowManager];
         id object = [_menuDict valueForKey:@"object"];
         if ([object respondsToSelector:@selector(handleMouseUp:)]) {
             int mouseRootX = [event intValueForKey:@"mouseRootX"];
             int mouseRootY = [event intValueForKey:@"mouseRootY"];
             int x = [_menuDict intValueForKey:@"x"];
             int y = [_menuDict intValueForKey:@"y"];
-            int w = [_menuDict intValueForKey:@"w"];
-            int h = [_menuDict intValueForKey:@"h"];
-            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y w:w h:h x11dict:_menuDict];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
             [object handleMouseUp:newEvent];
+            [_menuDict setValue:@"1" forKey:@"needsRedraw"];
+        } else if ([object respondsToSelector:@selector(handleMouseUp:context:)]) {
+            int mouseRootX = [event intValueForKey:@"mouseRootX"];
+            int mouseRootY = [event intValueForKey:@"mouseRootY"];
+            int x = [_menuDict intValueForKey:@"x"];
+            int y = [_menuDict intValueForKey:@"y"];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
+            [object handleMouseUp:newEvent context:_menuDict];
             [_menuDict setValue:@"1" forKey:@"needsRedraw"];
         }
         [self setValue:nil forKey:@"menuDict"];
@@ -352,7 +372,7 @@ NSLog(@"MenuBar handleRightMouseUp event %@", event);
 
 - (void)handleMouseMoved:(id)event
 {
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     [windowManager setX11Cursor:'5'];
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
     if (!_buttonDown && !_rightButtonDown) {
@@ -384,10 +404,14 @@ NSLog(@"MenuBar handleRightMouseUp event %@", event);
         if ([object respondsToSelector:@selector(handleMouseMoved:)]) {
             int x = [_menuDict intValueForKey:@"x"];
             int y = [_menuDict intValueForKey:@"y"];
-            int w = [_menuDict intValueForKey:@"w"];
-            int h = [_menuDict intValueForKey:@"h"];
-            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y w:w h:h x11dict:_menuDict];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
             [object handleMouseMoved:newEvent];
+            [_menuDict setValue:@"1" forKey:@"needsRedraw"];
+        } else if ([object respondsToSelector:@selector(handleMouseMoved:context:)]) {
+            int x = [_menuDict intValueForKey:@"x"];
+            int y = [_menuDict intValueForKey:@"y"];
+            id newEvent = [windowManager generateEventDictRootX:mouseRootX rootY:mouseRootY x:mouseRootX-x y:mouseRootY-y];
+            [object handleMouseMoved:newEvent context:_menuDict];
             [_menuDict setValue:@"1" forKey:@"needsRedraw"];
         }
     }
@@ -395,7 +419,7 @@ NSLog(@"MenuBar handleRightMouseUp event %@", event);
 }
 - (void)mapAppMenu:(id)dict window:(unsigned long)win x:(int)mouseRootX
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
 {
     if (_appMenuWindow) {
         if (win == _appMenuWindow) {
@@ -473,7 +497,7 @@ if (x+w+3 > monitorX+monitorWidth) {
     if ([obj respondsToSelector:@selector(preferredHeight)]) {
         h = [obj preferredHeight];
     }
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
 if (x+w >= monitorX+monitorWidth) {
     int dictWidth = [dict intValueForKey:@"width"];
     x = x+dictWidth-w;
@@ -635,7 +659,7 @@ if (x+w >= monitorX+monitorWidth) {
     for (int i=0; i<_pixelScaling*2; i++) {
         [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:19*_pixelScaling+i];
     }
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     int mouseRootX = [windowManager intValueForKey:@"mouseX"];
     id mouseMonitor = [Definitions monitorForX:mouseRootX y:0];
 

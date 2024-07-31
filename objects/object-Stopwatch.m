@@ -159,7 +159,7 @@ static void drawButtonInBitmap_rect_palette_(id bitmap, Int4 r, unsigned char *p
     _lapTextRect.h -= _elapsedTextRect.h;
     _lapTextRect.h -= _startButtonRect.h;
 }
-- (void)beginIteration:(id)event rect:(Int4)r
+- (void)beginIteration:(id)x11dict rect:(Int4)r
 {
 }
 

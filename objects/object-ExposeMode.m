@@ -86,7 +86,7 @@
 @implementation Definitions(jfewjfsdjflksdjfkljsdklf)
 + (void)toggleExposeMode
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id rootObject = [windowManager valueForKey:@"rootWindowObject"];
     if (![[rootObject className] isEqual:@"ExposeRootWindow"]) {
         [Definitions enterExposeMode];
@@ -96,7 +96,7 @@
 }
 + (void)enterExposeMode
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id oldRootWindowObject = [windowManager valueForKey:@"rootWindowObject"];
     if ([[oldRootWindowObject className] isEqual:@"ExposeRootWindow"]) {
         return;
@@ -114,7 +114,7 @@
 }
 + (void)exitExposeMode
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id rootObject = [windowManager valueForKey:@"rootWindowObject"];
     if (![[rootObject className] isEqual:@"ExposeRootWindow"]) {
         return;
@@ -137,7 +137,7 @@
 @implementation ExposeRootWindow
 - (void)unmapIrrelevantWindows
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id reparentClassName = [windowManager valueForKey:@"reparentClassName"];
     id objectWindows = [windowManager valueForKey:@"objectWindows"];
     for (int i=0; i<[objectWindows count]; i++) {
@@ -158,7 +158,7 @@
 }
 - (void)mapIrrelevantWindows
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id objectWindows = [windowManager valueForKey:@"objectWindows"];
     for (int i=0; i<[objectWindows count]; i++) {
         id dict = [objectWindows nth:i];
@@ -175,7 +175,7 @@
 }
 - (void)tileWindows
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id reparentClassName = [windowManager valueForKey:@"reparentClassName"];
     id monitors = [Definitions monitorConfig];
     id objectWindows = [windowManager valueForKey:@"objectWindows"];
@@ -213,7 +213,7 @@
 }
 - (void)revertWindowPositions
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id reparentClassName = [windowManager valueForKey:@"reparentClassName"];
     id objectWindows = [windowManager valueForKey:@"objectWindows"];
     for (int i=0; i<[objectWindows count]; i++) {
@@ -243,11 +243,10 @@
 {
     [Definitions exitExposeMode];
 }
-- (void)handleEnterWindowEvent:(id)event
+- (void)handleEnterWindowEvent:(id)event context:(id)x11dict
 {
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     id reparentClassName = [windowManager valueForKey:@"reparentClassName"];
-    id x11dict = [event valueForKey:@"x11dict"];
     if (!x11dict) {
         return;
     }
@@ -272,7 +271,7 @@
 }
 - (void)handleMouseMoved:(id)event
 {
-    id windowManager = [event valueForKey:@"windowManager"];
+    id windowManager = [Definitions windowManager];
     id dict = [windowManager dictForObjectWindowClassName:@"ExposeWindow"];
     [dict setValue:nil forKey:@"underneathObjectWindow"];
     [windowManager unmapObjectWindow:dict];
@@ -301,7 +300,7 @@
     right.x = r.x+r.w-5;
     [bitmap fillRect:right];
 
-    id windowManager = [@"windowManager" valueForKey];
+    id windowManager = [Definitions windowManager];
     unsigned long win = [[context valueForKey:@"window"] unsignedLongValue];
     if (win) {
         [windowManager addMaskToWindow:win bitmap:bitmap];
