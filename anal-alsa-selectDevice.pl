@@ -5,6 +5,12 @@ if ($arg !~ m/^\d+$/) {
     die('specify card number');
 }
 
+$baseDir = __FILE__;
+$baseDir =~ s/[^\/]*$//g;
+if ($baseDir) {
+    chdir $baseDir;
+}
+
 $path = $ENV{'HOME'} . '/.asoundrc';
 
 if (-e $path) {
@@ -32,7 +38,5 @@ defaults.ctl.card $arg
 EOF
 close FH;
 
-$configDir = `anal configDir`;
-$menuBarPath = "$configDir/Menu/menuBar.csv";
-system('touch', $menuBarPath);
+system('touch', 'Menu/menuBar.csv');
 
