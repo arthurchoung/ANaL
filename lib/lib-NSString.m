@@ -448,11 +448,11 @@
 
 - (id)dataValue
 {
-    return [NSData dataWithBytes:[self UTF8String] length:strlen([self UTF8String])];
+    return [Definitions dataWithBytes:[self UTF8String] length:strlen([self UTF8String])];
 }
 - (id)asData
 {
-    return [NSData dataWithBytes:[self UTF8String] length:strlen([self UTF8String])];
+    return [Definitions dataWithBytes:[self UTF8String] length:strlen([self UTF8String])];
 }
 
 
