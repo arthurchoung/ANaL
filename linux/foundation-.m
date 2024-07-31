@@ -1193,10 +1193,6 @@ NSLog(@"OUT OF MEMORY! NSString +stringWithFormat:");
 {
     return [[[self copy] autorelease] destructiveLastPathComponent];
 }
-+ (id)stringWithString:(id)str
-{
-    return [[str copy] autorelease];
-}
 - (int)characterAtIndex:(int)index
 {
     if (index < 0) {
@@ -1352,10 +1348,6 @@ NSLog(@"OUT OF MEMORY! NSString +stringWithFormat:");
     }
     fclose(fp);
     return str;
-}
-+ (id)string
-{
-    return nsfmt(@"");
 }
 + (id)stringWithUTF8String:(char *)cstr
 {
@@ -1565,10 +1557,6 @@ NSLog(@"NSArray valueForKey:%@", key);
         return count;
     }
 }
-+ (id)array
-{
-    return [[[NSArray alloc] init] autorelease];
-}
 + (id)arrayWithObjects:(id *)objects count:(unsigned int)count
 {
     id arr = [[[NSArray alloc] init] autorelease];
@@ -1763,14 +1751,6 @@ int qsort_compare_helper(void *a, void *b, void *arg)
 @end
 
 @implementation NSData
-+ (id)data
-{
-    return [[[self alloc] init] autorelease];
-}
-+ (id)dataWithCapacity:(int)length
-{
-    return [[[self alloc] initWithCapacity:length] autorelease];
-}
 - (id)initWithCapacity:(int)capacity
 {
     self = [super init];
@@ -1787,10 +1767,6 @@ int qsort_compare_helper(void *a, void *b, void *arg)
         }
     }
     return self;
-}
-+ (id)dataWithBytes:(char *)bytes length:(int)length
-{
-    return [[[self alloc] initWithBytes:bytes length:length] autorelease];
 }
 - (id)initWithBytes:(char *)bytes length:(int)length
 {
@@ -1810,10 +1786,6 @@ int qsort_compare_helper(void *a, void *b, void *arg)
     return self;
 }
 
-+ (id)dataWithBytesNoCopy:(char *)bytes length:(int)length
-{
-    return [[[self alloc] initWithBytesNoCopy:bytes length:length] autorelease];
-}
 - (id)initWithBytesNoCopy:(char *)bytes length:(int)length
 {
     self = [super init];
@@ -1940,10 +1912,6 @@ NSLog(@"alloc %d", _alloc);
         [dict setValue:elts[i+1] forKey:elts[i]];
     }
     return dict;
-}
-+ (id)dictionary
-{
-    return [[[NSDictionary alloc] init] autorelease];
 }
 + (id)dictionaryWithObjects:(id *)objects forKeys:(id *)keys count:(int)count
 {
