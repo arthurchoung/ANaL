@@ -41,15 +41,22 @@
 }
 - (void)handleMouseDown:(id)event
 {
+    id path = [Definitions configDir:@"Menu/rootWindowMenu.csv"];
+    [self showRootWindowMenu:event path:path];
 }
 - (void)handleRightMouseDown:(id)event
+{
+    id path = [Definitions configDir:@"Menu/rightButtonRootWindowMenu.csv"];
+    [self showRootWindowMenu:event path:path];
+}
+- (void)showRootWindowMenu:(id)event path:(id)path
 {
     id windowManager = [Definitions windowManager];
     int mouseRootX = [event intValueForKey:@"mouseRootX"];
     int mouseRootY = [event intValueForKey:@"mouseRootY"];
     id buttonDownWhich = [event valueForKey:@"buttonDownWhich"];
 
-    id obj = [[[Definitions configDir:@"Menu/rootWindowMenu.csv"] parseCSVFile] asMenu];
+    id obj = [[path parseCSVFile] asMenu];
     int w = [obj preferredWidth];
     int h = [obj preferredHeight];
 
@@ -59,28 +66,28 @@ int monitorY = [monitor intValueForKey:@"y"];
 int monitorWidth = [monitor intValueForKey:@"width"];
 int monitorHeight = [monitor intValueForKey:@"height"];
 int x = mouseRootX;
-if (x+w+3 > monitorX+monitorWidth) {
-    x = x-w-2;
+if (x+w > monitorX+monitorWidth) {
+    x = x-w;
     if (x < monitorX) {
         if (mouseRootX > monitorX + (monitorWidth / 2)) {
-            w = mouseRootX - monitorX - 3;
+            w = mouseRootX - monitorX;
             x = monitorX;
         } else {
-            w = monitorWidth - (mouseRootX - monitorX) - 3;
+            w = monitorWidth - (mouseRootX - monitorX);
             x = mouseRootX;
         }
     }
 }
 int y = mouseRootY;
-if (y+h+3 > monitorY+monitorHeight) {
-    if (h > monitorHeight-3) {
+if (y+h > monitorY+monitorHeight) {
+    if (h > monitorHeight) {
         y = monitorY;
-        h = monitorHeight-3;
+        h = monitorHeight;
     } else {
-        y = monitorY+monitorHeight-h-3;
+        y = monitorY+monitorHeight-h;
     }
 }
-    id dict = [windowManager openWindowForObject:obj x:x y:y w:w+3 h:h+3];
+    id dict = [windowManager openWindowForObject:obj x:x y:y w:w h:h];
     [windowManager setValue:dict forKey:@"buttonDownDict"];
     [windowManager setValue:buttonDownWhich forKey:@"buttonDownWhich"];
 }
