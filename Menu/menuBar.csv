@@ -1,12 +1,12 @@
 disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
-,,4,4,"AmigaCheckmarkMenuItem","configDir:'Menu/rootWindowMenu.csv'|parseCSVFile|asMenu"
+,,4,4,"AmigaCheckmarkMenuItem","analDir:'Menu/rootWindowMenu.csv'|parseCSVFile|asMenu"
 ,1,0,0,"TextMenuItem:''",
 ,,4,4,"TextMenuItem:'xset'","['anal-commandOutputMenu.pl' 'xset' 'q']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'ps'","['anal-commandOutputMenu.pl' 'ps' 'auxk' '-pcpu']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'lsblk'","['anal-commandOutputMenu.pl' 'lsblk' '-i' '-o' 'NAME,FSTYPE,FSVER,LABEL,FSAVAIL,FSUSE%,MOUNTPOINTS']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
-,,4,4,"TextMenuItem:'Window'","configDir:'Menu/windowMenu.csv'|parseCSVFile|asMenu"
+,,4,4,"TextMenuItem:'Window'","analDir:'Menu/windowMenu.csv'|parseCSVFile|asMenu"
 1,,4,4,"TextMenuItem:'Camera'","['anal-generateVideoCamerasMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
-,,4,4,"CommandTextMenuItem:['anal-monitor-monitorEvents'] lineMessage:[setupMonitors] stringFormat:'Mon #{currentMonitorIndexName}'","NSArray|addObject:'anal-monitor-generateMenuForMonitor:path:.pl'|addObject:(currentMonitorName)|addObject:(configDir:'Temp/listMonitors.txt')|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
+,,4,4,"CommandTextMenuItem:['anal-monitor-monitorEvents'] lineMessage:[setupMonitors] stringFormat:'Mon #{currentMonitorIndexName}'","NSArray|addObject:'anal-monitor-generateMenuForMonitor:path:.pl'|addObject:(currentMonitorName)|addObject:(analDir:'Temp/listMonitors.txt')|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"TextMenuItem:'Clip'","['anal-generateClipboardMenu.pl']|runCommandAndReturnOutput|asString|parseCSVFromString|asMenu"
 ,,4,4,"TextMenuItem:'Audio'","['anal-alsa-generateMenu.pl']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu"
 ,,4,4,"CommandTextMenuItem:['anal-alsa-printStatus'] stringFormat:'Volume: #{ifTrue:[playbackSwitch] then:[PercentString:(volume|times:100|intValue)] else:[MuteString]}'","VolumeMenu"
@@ -14,4 +14,4 @@ disable,flexible,leftPadding,rightPadding,objectMessage,messageForClick
 ,,4,4,"CommandBitmapMenuItem:['anal-printCPUStats.pl' ]",
 ,,4,4,"CommandTextMenuItem:['anal-network-printInfo.pl' ]","['anal-commandOutputMenu.pl' 'ifconfig' '-a']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
 ,,4,4,"TextMenuItem:'iwconfig'","['anal-commandOutputMenu.pl' 'iwconfig 2>&1']|runCommandAndReturnOutput|asString|parseGeneratedMenuFromString|asMenu|useFixedWidthFont"
-,,4,4,"CommandTextMenuItem:['anal-printDateEverySecond.pl']","configDir:'Menu/dateTimeMenu.csv'|parseCSVFile|asMenu"
+,,4,4,"CommandTextMenuItem:['anal-printDateEverySecond.pl']","analDir:'Menu/dateTimeMenu.csv'|parseCSVFile|asMenu"
