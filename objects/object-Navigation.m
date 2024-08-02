@@ -712,7 +712,8 @@ end:
     int cellHeight = [Definitions navigationBarHeight];
 
     Int4 headerRect = [Definitions rectWithX:rect.x y:rect.y w:rect.w h:cellHeight];
-    [bitmap setColor:@"#7990ae"];
+//    [bitmap setColor:@"#7990ae"];
+[bitmap setColor:@"#6688bb"];
     [bitmap fillRect:headerRect];
 Int4 shadowRect = headerRect;
 shadowRect.y -= 1;
