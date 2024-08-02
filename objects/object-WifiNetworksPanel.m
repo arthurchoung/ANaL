@@ -32,7 +32,6 @@
 {
     id obj = [@"WifiNetworksPanel" asInstance];
     id lines = nsarr();
-    [lines addObject:@"panelHorizontalStripes"];
     [lines addObject:@"panelText:'Wireless Networks'"];
     [lines addObject:@"panelText:''"];
     [lines addObject:@"panelText:'Choose a network ESSID:'"];
@@ -46,11 +45,18 @@
 
 static void drawStripedBackgroundInBitmap_rect_(id bitmap, Int4 r)
 {
-    [bitmap setColorIntR:205 g:212 b:222 a:255];
-    [bitmap fillRectangleAtX:r.x y:r.y w:r.w h:r.h];
-    [bitmap setColorIntR:201 g:206 b:209 a:255];
-    for (int i=6; i<r.w; i+=10) {
-        [bitmap fillRectangleAtX:r.x+i y:r.y w:4 h:r.h];
+    id color1 = @"#ececec";
+    id color2 = @"#f0f0f0";
+
+    [bitmap setColor:color1];
+    for (int i=0; i<r.h; i+=4) {
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i];
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i+1];
+    }
+    [bitmap setColor:color2];
+    for (int i=2; i<r.h; i+=4) {
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i];
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i+1];
     }
 }
 
@@ -183,8 +189,7 @@ static unsigned char *button_bottom_right_squared =
 
 - (void)drawInBitmap:(id)bitmap rect:(Int4)r
 {
-    [bitmap setColor:@"#aaaaaa"];
-    [bitmap fillRect:r];
+    drawStripedBackgroundInBitmap_rect_(bitmap, r);
 
     [self setValue:nsarr() forKey:@"buttons"];
     [self setValue:nsarr() forKey:@"buttonDicts"];
@@ -224,10 +229,6 @@ static unsigned char *button_bottom_right_squared =
 {
     [_bitmap setColor:color];
     [_bitmap fillRect:_r];
-}
-- (void)panelStripedBackground
-{
-    drawStripedBackgroundInBitmap_rect_(_bitmap, _r);
 }
 
 - (void)panelColor:(id)color

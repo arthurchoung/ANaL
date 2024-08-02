@@ -84,12 +84,30 @@ static int qsort_fileType_reverseDate(void *aptr, void *bptr, void *arg)
 
 static void drawStripedBackgroundInBitmap_rect_(id bitmap, Int4 r)
 {
+    // horizontal stripes
+    id color1 = @"#ececec";
+    id color2 = @"#f0f0f0";
+
+    [bitmap setColor:color1];
+    for (int i=0; i<r.h; i+=4) {
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i];
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i+1];
+    }
+    [bitmap setColor:color2];
+    for (int i=2; i<r.h; i+=4) {
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i];
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i+1];
+    }
+
+    // vertical stripes
+/*
     [bitmap setColorIntR:205 g:212 b:222 a:255];
     [bitmap fillRectangleAtX:r.x y:r.y w:r.w h:r.h];
     [bitmap setColorIntR:201 g:206 b:209 a:255];
     for (int i=6; i<r.w; i+=10) {
         [bitmap fillRectangleAtX:r.x+i y:r.y w:4 h:r.h];
     }
+*/
 }
 
 
@@ -296,13 +314,13 @@ static unsigned char *button_bottom_right_squared =
 
 - (void)drawInBitmap:(id)bitmap rect:(Int4)r
 {
+    drawStripedBackgroundInBitmap_rect_(bitmap, r);
 
 
     _cursorY = -_scrollY + r.y + 5;
     _r = r;
 
     [self setValue:bitmap forKey:@"bitmap"];
-    [self panelStripedBackground];
     int count = [_array count];
     for (int i=0; i<count; i++) {
         if (_cursorY >= r.y + r.h) {
@@ -336,10 +354,6 @@ static unsigned char *button_bottom_right_squared =
         }
     }
     [self setValue:nil forKey:@"bitmap"];
-}
-- (void)panelStripedBackground
-{
-    drawStripedBackgroundInBitmap_rect_(_bitmap, _r);
 }
 
 - (void)panelText:(id)text color:(id)color

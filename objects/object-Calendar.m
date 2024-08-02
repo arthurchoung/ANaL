@@ -29,13 +29,21 @@
 
 static void drawStripedBackgroundInBitmap_rect_(id bitmap, Int4 r)
 {
-    [bitmap setColorIntR:205 g:212 b:222 a:255];
-    [bitmap fillRectangleAtX:r.x y:r.y w:r.w h:r.h];
-    [bitmap setColorIntR:201 g:206 b:209 a:255];
-    for (int i=6; i<r.w; i+=10) {
-        [bitmap fillRectangleAtX:r.x+i y:r.y w:4 h:r.h];
+    id color1 = @"#ececec";
+    id color2 = @"#f0f0f0";
+
+    [bitmap setColor:color1];
+    for (int i=0; i<r.h; i+=4) {
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i];
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i+1];
+    }
+    [bitmap setColor:color2];
+    for (int i=2; i<r.h; i+=4) {
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i];
+        [bitmap drawHorizontalLineAtX:r.x x:r.x+r.w-1 y:r.y+i+1];
     }
 }
+
 
 static int monthNameAsInt(id str)
 {
