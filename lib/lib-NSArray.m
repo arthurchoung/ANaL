@@ -165,6 +165,21 @@
     }
     return keepArr;
 }
+- (id)removeIfKey:(id)key equals:(id)string
+{
+    id keepArr = nsarr();
+    for (int i=0; i<[self count]; i++) {
+        id elt = [self nth:i];
+        id val = [elt valueForKey:key];
+        if (val) {
+            if ([val isEqual:string]) {
+                continue;
+            }
+        }
+        [keepArr addObject:elt];
+    }
+    return keepArr;
+}
 
 - (id)keepIfKey:(id)key startsWith:(id)string
 {
