@@ -19,7 +19,7 @@ fi
 # Set root password and create new user
 #
 
-anal-installerSetupAccounts.sh
+anal-installer-setupAccounts.sh
 
 #
 # Run package setup scripts
