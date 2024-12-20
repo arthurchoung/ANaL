@@ -141,6 +141,9 @@
         }
         if (![text length]) {
             text = [elt valueForKey:@"displayName"];
+            if (![text length]) {
+                text = [elt valueForKey:@"messageForClick"];
+            }
         }
         if ([text length]) {
             int w = [bitmap bitmapWidthForText:text];
@@ -219,6 +222,9 @@
         }
         if (![text length]) {
             text = [elt valueForKey:@"displayName"];
+            if (![text length]) {
+                text = [elt valueForKey:@"messageForClick"];
+            }
         }
         id rightText = [elt valueForKey:@"hotKey"];
         Int4 r2 = cellRect;
