@@ -125,8 +125,14 @@
     }    
     int c1 = _contents[1];
     int c2 = _contents[2];
-    int n1 = (isdigit(c1)) ? (c1 - '0') : (c1 - 'a' + 10);
-    int n2 = (isdigit(c2)) ? (c2 - '0') : (c2 - 'a' + 10);
+    int n1 = 0;
+    if (isdigit(c1)) { n1 = (c1 - '0'); }
+    else if (islower(c1)) { n1 = (c1 - 'a' + 10); }
+    else if (isupper(c1)) { n1 = (c1 - 'A' + 10); }
+    int n2 = 0;
+    if (isdigit(c2)) { n2 = (c2 - '0'); }
+    else if (islower(c2)) { n2 = (c2 - 'a' + 10); }
+    else if (isupper(c2)) { n2 = (c2 - 'A' + 10); }
     if ((n1 < 0) || (n1 > 15)) {
         return 255;
     }
@@ -145,8 +151,14 @@
     }
     int c1 = _contents[3];
     int c2 = _contents[4];
-    int n1 = (isdigit(c1)) ? (c1 - '0') : (c1 - 'a' + 10);
-    int n2 = (isdigit(c2)) ? (c2 - '0') : (c2 - 'a' + 10);
+    int n1 = 0;
+    if (isdigit(c1)) { n1 = (c1 - '0'); }
+    else if (islower(c1)) { n1 = (c1 - 'a' + 10); }
+    else if (isupper(c1)) { n1 = (c1 - 'A' + 10); }
+    int n2 = 0;
+    if (isdigit(c2)) { n2 = (c2 - '0'); }
+    else if (islower(c2)) { n2 = (c2 - 'a' + 10); }
+    else if (isupper(c2)) { n2 = (c2 - 'A' + 10); }
     if ((n1 < 0) || (n1 > 15)) {
         return 255;
     }
@@ -165,8 +177,14 @@
     }
     int c1 = _contents[5];
     int c2 = _contents[6];
-    int n1 = (isdigit(c1)) ? (c1 - '0') : (c1 - 'a' + 10);
-    int n2 = (isdigit(c2)) ? (c2 - '0') : (c2 - 'a' + 10);
+    int n1 = 0;
+    if (isdigit(c1)) { n1 = (c1 - '0'); }
+    else if (islower(c1)) { n1 = (c1 - 'a' + 10); }
+    else if (isupper(c1)) { n1 = (c1 - 'A' + 10); }
+    int n2 = 0;
+    if (isdigit(c2)) { n2 = (c2 - '0'); }
+    else if (islower(c2)) { n2 = (c2 - 'a' + 10); }
+    else if (isupper(c2)) { n2 = (c2 - 'A' + 10); }
     if ((n1 < 0) || (n1 > 15)) {
         return 255;
     }
@@ -185,8 +203,14 @@
     }
     int c1 = _contents[7];
     int c2 = _contents[8];
-    int n1 = (isdigit(c1)) ? (c1 - '0') : (c1 - 'a' + 10);
-    int n2 = (isdigit(c2)) ? (c2 - '0') : (c2 - 'a' + 10);
+    int n1 = 0;
+    if (isdigit(c1)) { n1 = (c1 - '0'); }
+    else if (islower(c1)) { n1 = (c1 - 'a' + 10); }
+    else if (isupper(c1)) { n1 = (c1 - 'A' + 10); }
+    int n2 = 0;
+    if (isdigit(c2)) { n2 = (c2 - '0'); }
+    else if (islower(c2)) { n2 = (c2 - 'a' + 10); }
+    else if (isupper(c2)) { n2 = (c2 - 'A' + 10); }
     if ((n1 < 0) || (n1 > 15)) {
         return 255;
     }
