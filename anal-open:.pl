@@ -100,7 +100,7 @@ if ($path =~ m/\.d64$/i) {
     exit 0;
 }
 
-if ($path =~ m/\.(nes|smc|sfc|md|smd|sms|gb|bin|a26)$/i) {
+if ($path =~ m/\.(nes|smc|sfc|md|smd|sms|gb|bin|a26|sg)$/i) {
     system('anal', 'show', 'arg0|emulatorFromFile', $path);
     exit 0;
 }
