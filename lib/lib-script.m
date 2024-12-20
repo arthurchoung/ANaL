@@ -224,7 +224,10 @@ NSLog(@"Bad signature");
                         }
                     }
                 } else if (signature[6] == 'i') {
-                    if (signature[7] == '@') {
+                    if (signature[7] == 0) {
+                        id (*func)(id, SEL, id, id, id, int) = imp;
+                        return func(target, sel, [args nth:0], [args nth:1], [args nth:2], [[args nth:3] intValue]);
+                    } else if (signature[7] == '@') {
                         if (signature[8] == '@') {
                             if (signature[9] == 0) {
                                 if (signature[0] == '@') {
@@ -308,6 +311,14 @@ NSLog(@"Bad signature");
                                 id (*func)(id, SEL, id, int, int, int, int) = imp;
                                 return func(target, sel, [args nth:0], [[args nth:1] intValue], [[args nth:2] intValue], [[args nth:3] intValue], [[args nth:4] intValue]);
                             }
+                        }
+                    }
+                } else if (signature[6] == 'C') {
+                    if (signature[7] == 0) {
+                        if (signature[0] == 'v') {
+                            void (*func)(id, SEL, id, int, int, unsigned char) = imp;
+                            func(target, sel, [args nth:0], [[args nth:1] intValue], [[args nth:2] intValue], [[args nth:3] unsignedCharValue]);
+                            return target;
                         }
                     }
                 }
@@ -415,6 +426,10 @@ NSLog(@"Bad signature");
                     if (signature[0] == '@') {
                         id (*func)(id, SEL, int, int, int) = imp;
                         return func(target, sel, [[args nth:0] intValue], [[args nth:1] intValue], [[args nth:2] intValue]);
+                    } else if (signature[0] == 'v') {
+                        void (*func)(id, SEL, int, int, int) = imp;
+                        func(target, sel, [[args nth:0] intValue], [[args nth:1] intValue], [[args nth:2] intValue]);
+                        return target;
                     }
                 } else if (signature[6] == 'i') {
                     if (signature[7] == 0) {
