@@ -20,19 +20,19 @@ if [ ! -d $TMP ]; then
 fi
 
 # Set the root password:
-UPASS=$( anal-installerChangePasswordForUser:.sh root )
+UPASS=$( anal-installer-changePasswordForUser:.sh root )
 echo "root:${UPASS}" | chroot ${T_PX} /usr/sbin/chpasswd
 unset UPASS
 
 # Set up a user account,
 # This will set UFULLNAME, UACCOUNT and USHELL variables:
-if anal-installerAddUser.sh 2>&1 1> $TMP/temppasswd ; then
+if anal-installer-addUser.sh 2>&1 1> $TMP/temppasswd ; then
   # User filled out the form, so let's get the results for
   # UFULLNAME, UACCOUNT, UACCTNR and USHELL:
   source $TMP/temppasswd
   rm -f $TMP/temppasswd
   # Set a password for the new account:
-  UPASS=$( anal-installerChangePasswordForUser:.sh $UACCOUNT )
+  UPASS=$( anal-installer-changePasswordForUser:.sh $UACCOUNT )
   # Create the account and set the password:
   chroot ${T_PX} /usr/sbin/useradd -c "$UFULLNAME" -g users -G wheel,audio,cdrom,floppy,plugdev,video,power,netdev,lp,scanner,dialout,games,disk,input -u ${UACCTNR} -d /home/${UACCOUNT} -m -s ${USHELL} ${UACCOUNT}
   echo "${UACCOUNT}:${UPASS}" | chroot ${T_PX} /usr/sbin/chpasswd
