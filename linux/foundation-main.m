@@ -107,7 +107,10 @@ NSLog(@"Unable to setenv SUDO_ASKPASS");
                 exit(0);
             }
             if ([result respondsToSelector:@selector(drawInBitmap:rect:)]
-                || [result respondsToSelector:@selector(drawInBitmap:rect:context:)])
+                || [result respondsToSelector:@selector(drawInBitmap:rect:context:)]
+                || [result respondsToSelector:@selector(pixelBytesRGBA8888)]
+                || [result respondsToSelector:@selector(pixelBytesBGR565)]
+                )
             {
                 [Definitions runWindowManagerForObject:result];
                 [[Definitions navigationStack] setValue:nil forKey:@"context"];
@@ -127,7 +130,12 @@ NSOut(@"%@", result);
         }
 
         if (argc == 1) {
-            id obj = [Definitions Dir];
+            id obj = nil;
+            if ([Definitions respondsToSelector:@selector(Main)]) {
+                obj = [Definitions Main];
+            } else {
+                obj = [Definitions Dir];
+            }
             [Definitions runWindowManagerForObject:obj];
             [[Definitions navigationStack] setValue:nil forKey:@"context"];
         }
