@@ -57,9 +57,9 @@ fi
 
 TEXT=""
 
-RESULTS=( $( PATH="/root:$PATH" anal-installerChooseDisk.pl ) )
+RESULTS=( $( PATH="/root:$PATH" anal-installer-chooseDisk.pl ) )
 if [ ${#RESULTS[@]} -eq 3 ]; then
-    TEXT=$( PATH="/root:$PATH" anal-installerInstallToDisk:bootPartition:systemPartition:.sh ${RESULTS[0]} ${RESULTS[1]} ${RESULTS[2]} )
+    TEXT=$( PATH="/root:$PATH" anal-installer-installToDisk:bootPartition:systemPartition:.sh ${RESULTS[0]} ${RESULTS[1]} ${RESULTS[2]} )
 else
     TEXT="Installation aborted."
 fi
