@@ -9,6 +9,36 @@ Amiga, NeXTSTEP, and Linux -- Together at last!
   * Running on Linux and X11
 
 
+## Download
+
+Installer ISO based on Slackware64 (1.33 GB)
+
+Boot with Legacy BIOS.
+
+If using VirtualBox, 3D acceleration should be enabled.
+
+This is a multilib system, the only 32-bit application included is Wine.
+
+It comes with the 64-bit gcc only, so the included gcc cannot create 32 bit binaries.
+
+It is a stripped down system that does not include systemd, wayland, elogind, polkit, pulseaudio, or NetworkManager.
+
+http://fmamp.com/download/
+
+
+## ANaL USB stick
+
+To write the image to a USB drive:
+
+$ dd if=/path/to/file.iso of=/dev/sdX bs=1M
+
+/path/to/file.iso is the file name of the image file.
+
+/dev/sdX is the USB device to write the image to.
+
+Run as root. Be careful not to write to the wrong drive.
+
+
 ## Overview
 
 The goal is to have an OS that is stable and not constantly changing from year to year for no apparent reason.
