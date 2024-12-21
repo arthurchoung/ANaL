@@ -407,6 +407,7 @@ static void drawDefaultButtonDownInBitmap_rect_(id bitmap, Int4 r)
 - (int)preferredHeight
 {
     id bitmap = [Definitions bitmapWithWidth:1 height:1];
+    [bitmap useTopazFont];
     int lineHeight = [bitmap bitmapHeightForText:@"X"];
     int checkboxWidth = [Definitions widthForCString:checkboxPixels];
     int h = 24;

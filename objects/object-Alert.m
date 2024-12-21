@@ -418,6 +418,7 @@ NSLog(@"showAlert:'%@'", self);
         return 288;
     }
     id bitmap = [Definitions bitmapWithWidth:1 height:1];
+    [bitmap useTopazFont];
 
     int textWidth = 480 - 32;
     id text = [bitmap fitBitmapString:_text width:textWidth];
